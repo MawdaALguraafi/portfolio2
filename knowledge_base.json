@@ -1,0 +1,160 @@
+[
+  {
+    "id": "site_identity",
+    "title": "Portfolio Identity / هوية الموقع",
+    "category": "site",
+    "content": "This portfolio belongs to Mawda Alguraafi and presents her work in data, artificial intelligence, analytics, and dashboard development. The projects page title is 'Projects | Mawda Alguraafi'.\n\nهذا البورتفوليو يعود إلى مودة القرافي ويعرض أعمالها في البيانات والذكاء الاصطناعي والتحليلات وتطوير لوحات المعلومات. عنوان صفحة المشاريع هو 'المشاريع | مودة القرافي'."
+  },
+
+  {
+    "id": "about_mawda",
+    "title": "About Mawda / نبذة عن مودة",
+    "category": "about",
+    "content": "Mawda Alguraafi is a Computer Science graduate passionate about Artificial Intelligence and data analysis. She builds AI-driven, data-powered solutions that transform complex information into clear, actionable insights and address real-world challenges. She is skilled in Python, SQL, Excel, Power BI, and Figma, with a strong focus on AI-assisted analytics, data visualization, and designing intuitive user experiences. She is always eager to learn, grow, and contribute to impactful, technology-driven projects.\n\nمودة القرافي خريجة علوم حاسب شغوفة بالذكاء الاصطناعي وتحليل البيانات. تبني حلولًا مدعومة بالذكاء الاصطناعي والبيانات لتحويل المعلومات المعقدة إلى رؤى واضحة وقابلة للتنفيذ ومعالجة تحديات واقعية. تمتلك مهارات في Python وSQL وExcel وPower BI وFigma، مع تركيز قوي على التحليلات بمساعدة الذكاء الاصطناعي، وتصور البيانات، وتصميم تجارب مستخدم بسيطة وواضحة. وهي دائمًا متحمسة للتعلم والتطور والمساهمة في مشاريع تقنية مؤثرة."
+  },
+
+  {
+    "id": "experience_elm",
+    "title": "Data Analyst – Elm / محللة بيانات – علم",
+    "category": "experience",
+    "content": "Mawda works as a Data Analyst at Elm since November 2025 to present. She builds interactive dashboards using Tableau and Power BI, develops analytical reports using SAP Web Intelligence (WebI) and SAP Information Design Tool (IDT), and uses SQL Server for data extraction, validation, and analysis. Her work supports business reporting and decision-making.\n\nتعمل مودة كمحللة بيانات في شركة علم منذ نوفمبر 2025 وحتى الآن. تقوم ببناء لوحات معلومات تفاعلية باستخدام Tableau وPower BI، وتطور تقارير تحليلية باستخدام SAP Web Intelligence وSAP Information Design Tool (IDT)، وتستخدم SQL Server لاستخراج البيانات والتحقق منها وتحليلها. ويساعد عملها في دعم التقارير واتخاذ القرار."
+  },
+  {
+    "id": "experience_elm_points",
+    "title": "Data Analyst Responsibilities / مسؤوليات محللة البيانات",
+    "category": "experience",
+    "content": "Key responsibilities in the Data Analyst role include building interactive dashboards using Tableau and Power BI, developing analytical reports using SAP Web Intelligence (WebI) and IDT, and using SQL Server for data extraction, validation, and analysis.\n\nتشمل أبرز المسؤوليات في دور محللة البيانات بناء لوحات معلومات تفاعلية باستخدام Tableau وPower BI، وتطوير تقارير تحليلية باستخدام SAP Web Intelligence (WebI) وIDT، واستخدام SQL Server لاستخراج البيانات والتحقق منها وتحليلها."
+  },
+  {
+    "id": "experience_internship",
+    "title": "Intern – Department of Criminal Evidence / متدربة – إدارة الأدلة الجنائية",
+    "category": "experience",
+    "content": "Mawda completed an internship at the Department of Criminal Evidence from June 2024 to August 2024. She was trained in mobile forensic investigation using specialized tools such as XRY, XAMN, MD-NEXT, and MD-RED, with a focus on organizing digital evidence and preparing technical reports.\n\nأكملت مودة تدريبًا في إدارة الأدلة الجنائية من يونيو 2024 إلى أغسطس 2024. وتدربت على التحقيق الجنائي الرقمي للأجهزة المحمولة باستخدام أدوات متخصصة مثل XRY وXAMN وMD-NEXT وMD-RED، مع التركيز على تنظيم الأدلة الرقمية وإعداد التقارير الفنية."
+  },
+  {
+    "id": "experience_internship_points",
+    "title": "Internship Responsibilities / مسؤوليات التدريب",
+    "category": "experience",
+    "content": "During the internship, Mawda conducted mobile forensic analysis using XRY, XAMN, MD-NEXT, and MD-RED, organized digital evidence, supported technical investigation tasks, and prepared structured technical reports for documentation purposes.\n\nخلال التدريب، أجرت مودة تحليلًا جنائيًا رقميًا للأجهزة المحمولة باستخدام XRY وXAMN وMD-NEXT وMD-RED، ونظمت الأدلة الرقمية، وساهمت في المهام الفنية المتعلقة بالتحقيق، وأعدت تقارير تقنية منظمة لأغراض التوثيق."
+  },
+  {
+    "id": "education_bootcamp",
+    "title": "Data Science & AI Bootcamp / معسكر علوم البيانات والذكاء الاصطناعي",
+    "category": "education",
+    "content": "Mawda completed a Data Science and Artificial Intelligence Bootcamp at Tuwaiq Academy from September 2025 to October 2025. She completed an intensive bootcamp in Data Science and Artificial Intelligence, designed and developed an AI-powered laboratory safety monitoring system called Nabahah using computer vision, and applied machine learning, data analysis, and model development on real-world datasets.\n\nأكملت مودة معسكر علوم البيانات والذكاء الاصطناعي في أكاديمية طويق من سبتمبر 2025 إلى أكتوبر 2025. وقد أنهت معسكرًا مكثفًا في علوم البيانات والذكاء الاصطناعي، وصممت وطورت نظامًا ذكيًا لمراقبة سلامة المختبرات يسمى نباهة باستخدام الرؤية الحاسوبية، وطبقت تعلم الآلة وتحليل البيانات وتطوير النماذج على بيانات واقعية."
+  },
+  {
+    "id": "education_bachelor",
+    "title": "Bachelor of Computer Science / بكالوريوس علوم الحاسب",
+    "category": "education",
+    "content": "Mawda earned a Bachelor of Computer Science from Taibah University from July 2020 to May 2025. She graduated with First-Class Honors with a GPA of 4.88 out of 5.00. She built a strong foundation in data analysis, algorithms, and software development, and worked on academic projects involving databases, programming, and problem-solving.\n\nحصلت مودة على درجة البكالوريوس في علوم الحاسب من جامعة طيبة من يوليو 2020 إلى مايو 2025. وتخرجت بمرتبة الشرف الأولى بمعدل 4.88 من 5.00. كما اكتسبت أساسًا قويًا في تحليل البيانات والخوارزميات وتطوير البرمجيات، وعملت على مشاريع أكاديمية في قواعد البيانات والبرمجة وحل المشكلات."
+  },
+  {
+    "id": "skill_programming",
+    "title": "Programming Languages / لغات البرمجة",
+    "category": "skills",
+    "content": "Mawda's programming languages include Java, Python, and SQL.\n\nتشمل لغات البرمجة لدى مودة: Java وPython وSQL."
+  },
+  {
+    "id": "skill_data_visualization",
+    "title": "Data Analysis & Visualization / تحليل البيانات وتصورها",
+    "category": "skills",
+    "content": "Mawda has skills in Data Cleaning, Exploratory Data Analysis (EDA), Power BI, Streamlit, FastAPI, and Tableau.\n\nتمتلك مودة مهارات في تنظيف البيانات، والتحليل الاستكشافي للبيانات (EDA)، وPower BI، وStreamlit، وFastAPI، وTableau."
+  },
+  {
+    "id": "skill_ml",
+    "title": "Machine Learning / تعلم الآلة",
+    "category": "skills",
+    "content": "Mawda has machine learning skills in Scikit-learn, Model Training, and Model Evaluation.\n\nتمتلك مودة مهارات في تعلم الآلة تشمل Scikit-learn وتدريب النماذج وتقييم النماذج."
+  },
+  {
+    "id": "skill_office",
+    "title": "Microsoft Office / مايكروسوفت أوفيس",
+    "category": "skills",
+    "content": "Mawda uses Microsoft Office tools including Excel and Word.\n\nتستخدم مودة أدوات مايكروسوفت أوفيس مثل Excel وWord."
+  },
+  {
+    "id": "skill_frontend",
+    "title": "Front-End / تطوير الواجهات",
+    "category": "skills",
+    "content": "Mawda has front-end development skills in HTML and CSS.\n\nتمتلك مودة مهارات تطوير الواجهات باستخدام HTML وCSS."
+  },
+  {
+    "id": "skill_design",
+    "title": "Design / التصميم",
+    "category": "skills",
+    "content": "Mawda uses Figma and Canva for design work.\n\nتستخدم مودة Figma وCanva في أعمال التصميم."
+  },
+  {
+    "id": "skill_reporting",
+    "title": "Reporting Tools / أدوات التقارير",
+    "category": "skills",
+    "content": "Mawda uses SAP Information Design Tool (IDT) and SAP Web Intelligence (WebI) as reporting tools.\n\nتستخدم مودة SAP Information Design Tool (IDT) وSAP Web Intelligence (WebI) كأدوات للتقارير."
+  },
+  {
+    "id": "featured_projects_overview",
+    "title": "Featured Projects / أبرز المشاريع",
+    "category": "projects",
+    "content": "Mawda's portfolio features a selection of projects across AI, data analysis, and interactive dashboards. The projects include AI systems, business dashboards, and analytical applications.\n\nيتضمن بورتفوليو مودة مجموعة مختارة من المشاريع في الذكاء الاصطناعي وتحليل البيانات ولوحات المعلومات التفاعلية. وتشمل المشاريع أنظمة ذكية ولوحات أعمال وتطبيقات تحليلية."
+  },
+  {
+    "id": "project_nabahah_short",
+    "title": "Nabāhah (نباهة) – AI-based Laboratory Safety System / نباهة – نظام سلامة مختبرات بالذكاء الاصطناعي",
+    "category": "project",
+    "content": "Nabāhah is an AI-powered lab safety monitoring system using computer vision to detect PPE compliance and hazards, with dashboard analytics and alerts.\n\nنباهة هو نظام لمراقبة سلامة المختبرات يعتمد على الرؤية الحاسوبية لاكتشاف الالتزام بمعدات السلامة والمخاطر، مع تحليلات وتنبيهات عبر لوحة معلومات."
+  },
+  {
+    "id": "project_nabahah_full",
+    "title": "Nabāhah Full Details / تفاصيل مشروع نباهة",
+    "category": "project",
+    "content": "Nabāhah (نباهة) is an AI-powered laboratory safety monitoring system designed to enhance safety compliance and reduce risks in laboratory environments. It uses computer vision to detect PPE compliance including lab coat, gloves, mask, and goggles, red-zone violations, and hazards such as spills, smoke, and fire, then generates alerts and analytics through a dashboard. Technologies used include Python, FastAPI, YOLOv8, and Supabase. Key features include real-time PPE detection and safety violations monitoring, hazard detection for spill, smoke, and fire with alert logic, dashboard analytics with KPIs, charts, and database viewer, model toggles management for enabling and disabling models with logging of detections and alerts, bilingual voice alerts in Arabic and English using Edge-TTS, and a RAG-based chatbot for laboratory safety queries.\n\nنباهة هو نظام ذكي لمراقبة سلامة المختبرات يهدف إلى رفع الالتزام بإجراءات السلامة وتقليل المخاطر داخل بيئة المختبر. يعتمد على الرؤية الحاسوبية لاكتشاف الالتزام بمعدات الوقاية مثل المعطف والقفازات والكمامة والنظارات، ورصد تجاوزات المناطق الحمراء، وكذلك اكتشاف المخاطر مثل الانسكابات والدخان والحريق، ثم إنشاء تنبيهات وتحليلات من خلال لوحة معلومات. تشمل التقنيات المستخدمة Python وFastAPI وYOLOv8 وSupabase. ومن أهم المميزات: الرصد اللحظي للالتزام بمعدات الوقاية ومخالفات السلامة، واكتشاف المخاطر مثل الانسكاب والدخان والحريق مع منطق تنبيهات، وتحليلات لوحة معلومات تشمل KPIs ورسومًا بيانية وعرض قاعدة البيانات، وإدارة تشغيل وإيقاف النماذج مع تسجيل الاكتشافات والتنبيهات، والتنبيهات الصوتية ثنائية اللغة العربية والإنجليزية باستخدام Edge-TTS، وروبوت محادثة يعتمد على RAG للإجابة على استفسارات السلامة في المختبر."
+  },
+  {
+    "id": "project_interviewsense",
+    "title": "InterviewSense – AI Interview Evaluation System / نظام تقييم مقابلات التوظيف بالذكاء الاصطناعي",
+    "category": "project",
+    "content": "InterviewSense is an AI-powered system that evaluates job applicants by analyzing text and facial expressions. It combines speech-to-text conversion, text similarity analysis, and facial emotion recognition (FER) to provide objective assessments. Technologies used include Python, Flask, JavaScript, AssemblyAI, DeepFace, and FER Library. The datasets used include LibriSpeech, FER2013, Customized FER, and Modified ARTJI. Key features include automatic speech recognition (ASR), question and answer generation using ChatGPT, text similarity analysis with cosine and Jaccard metrics, and facial emotion recognition for candidate evaluation.\n\nInterviewSense هو نظام يعتمد على الذكاء الاصطناعي لتقييم المتقدمين للوظائف عبر تحليل الصوت والنص وتعابير الوجه. يجمع بين تحويل الصوت إلى نص، وتحليل تشابه النصوص، والتعرف على المشاعر (FER) لتقديم تقييمات أكثر موضوعية. تشمل التقنيات المستخدمة Python وFlask وJavaScript وAssemblyAI وDeepFace وFER Library. وتشمل البيانات المستخدمة LibriSpeech وFER2013 وCustomized FER وModified ARTJI. ومن أهم المميزات: التعرف الآلي على الكلام (ASR)، وتوليد أسئلة وأجوبة باستخدام ChatGPT، وتحليل تشابه النصوص باستخدام Cosine وJaccard، والتعرف على مشاعر الوجه لتقييم المتقدم."
+  },
+  {
+    "id": "project_adidas",
+    "title": "Adidas Sales Dashboard – EDA & Interactive Visualization / لوحة مبيعات أديداس – التحليل الاستكشافي والتصور التفاعلي",
+    "category": "project",
+    "content": "Adidas Sales Dashboard is a data analytics system designed to analyze Adidas sales performance through exploratory data analysis and interactive visualizations. It integrates data cleaning, statistical analysis, and dashboarding to deliver clear and actionable business insights. Technologies used include Python, Pandas, Matplotlib, Streamlit, and Plotly. The dataset used is the Adidas Sales Dataset from Kaggle. Key features include data cleaning and preprocessing of sales records, exploratory data analysis of sales trends and performance, an interactive dashboard for real-time data exploration, KPI tracking for total sales, profit, units sold, and top-performing products, and visual analysis of regional performance and sales methods.\n\nلوحة مبيعات أديداس هي نظام تحليل بيانات يهدف إلى تحليل أداء مبيعات أديداس من خلال التحليل الاستكشافي للبيانات والتصورات التفاعلية. يجمع النظام بين تنظيف البيانات والتحليل الإحصائي وبناء لوحات المعلومات لتقديم رؤى واضحة وقابلة للتنفيذ تدعم اتخاذ القرار. تشمل التقنيات المستخدمة Python وPandas وMatplotlib وStreamlit وPlotly. ومصدر البيانات هو مجموعة بيانات مبيعات أديداس من Kaggle. ومن أبرز المميزات: تنظيف ومعالجة بيانات المبيعات، وإجراء التحليل الاستكشافي للبيانات لاكتشاف اتجاهات الأداء، ولوحة تحكم تفاعلية لاستكشاف البيانات بشكل لحظي، وتتبع مؤشرات الأداء الرئيسية مثل إجمالي المبيعات والأرباح والوحدات المباعة وأفضل المنتجات، وتحليل بصري للأداء حسب المناطق وقنوات البيع."
+  },
+  {
+    "id": "project_king_county",
+    "title": "King County – Housing Sales Dashboard & Price Prediction / تحليل مبيعات المنازل وتوقع الأسعار",
+    "category": "project",
+    "content": "King County – Housing Sales Dashboard & Price Prediction is a complete analytics project for housing sales data. It includes data cleaning, exploratory analysis, feature engineering, and building machine learning models to predict house prices. The project focuses on generating clear insights and supporting decision-making using visualizations and evaluation metrics. Technologies used include Python, Pandas, NumPy, Matplotlib, and Scikit-learn. Key steps include data cleaning and handling missing values, feature engineering and correlation analysis, model training and evaluation using regression, and visualizations for trends and important factors impacting price.\n\nمشروع King County هو مشروع تحليلي متكامل لبيانات مبيعات المنازل يشمل تنظيف البيانات والاستكشاف والتحليل وهندسة الخصائص وبناء نماذج تعلم آلي لتوقع أسعار المنازل. يركز المشروع على استخراج رؤى واضحة لدعم اتخاذ القرار عبر التصورات والمؤشرات. تشمل التقنيات المستخدمة Python وPandas وNumPy وMatplotlib وScikit-learn. وتشمل الخطوات الأساسية تنظيف البيانات والتعامل مع القيم المفقودة، وهندسة الخصائص وتحليل الارتباط، وتدريب النماذج وتقييمها باستخدام الانحدار، وعرض تصورات للاتجاهات والعوامل الأكثر تأثيرًا على السعر."
+  },
+  {
+    "id": "project_business_activities",
+    "title": "Business Activities in Saudi Arabia – Dashboard / لوحة أنشطة الأعمال في السعودية",
+    "category": "project",
+    "content": "Business Activities in Saudi Arabia is a Power BI dashboard project that provides an overview of business activities across different cities and regions of Saudi Arabia. It highlights KPIs, categories, and distributions using interactive visuals to support quick insights and reporting. Tools and technologies include Power BI, Data Modeling, KPI Design, and Interactive Visuals. Key features include KPI cards for a quick performance overview, regional breakdown and comparisons, clear charts for distributions and trends, and a business-focused layout for decision makers.\n\nلوحة أنشطة الأعمال في السعودية هي مشروع لوحة معلومات باستخدام Power BI يقدم نظرة عامة على أنشطة الأعمال في مدن ومناطق مختلفة داخل المملكة. يبرز مؤشرات الأداء والتصنيفات والتوزيعات عبر رسوم تفاعلية لدعم التقارير واستخلاص الرؤى بسرعة. وتشمل الأدوات والتقنيات Power BI ونمذجة البيانات وتصميم مؤشرات الأداء والرسوم التفاعلية. ومن أهم المميزات: بطاقات KPI لعرض نظرة عامة سريعة، وتفصيل ومقارنة بين المناطق، ورسوم واضحة للتوزيعات والاتجاهات، وتصميم مناسب لصنّاع القرار."
+  },
+  {
+    "id": "project_ecommerce",
+    "title": "E-Commerce Customer Behavior Dashboard / لوحة سلوك العملاء في التجارة الإلكترونية",
+    "category": "project",
+    "content": "E-Commerce Customer Behavior Dashboard is a Power BI and Excel dashboard project that analyzes customer behavior in e-commerce. It explores purchasing patterns, satisfaction indicators, and the influence of ads and social media on buying decisions. The dashboard is designed to highlight clear insights using KPI cards and clean visuals. Tools and technologies include Microsoft Excel, Power BI, Data Cleaning, KPI Design, and Interactive Visuals. Key features include customer purchasing behavior insights, satisfaction indicators and segmentation, impact analysis for ads and social media, and business-friendly visuals for reporting.\n\nلوحة سلوك العملاء في التجارة الإلكترونية هي مشروع لوحة معلومات باستخدام Power BI وExcel لتحليل سلوك العملاء في التجارة الإلكترونية. يستكشف أنماط الشراء ومؤشرات الرضا وتأثير الإعلانات ووسائل التواصل الاجتماعي على قرار الشراء. وتم تصميم اللوحة لإبراز الرؤى بشكل واضح من خلال بطاقات KPI ورسوم منظمة. وتشمل الأدوات والتقنيات Microsoft Excel وPower BI وتنظيف البيانات وتصميم مؤشرات الأداء والرسوم التفاعلية. ومن أهم المميزات: تحليل سلوك الشراء والأنماط، ومؤشرات الرضا وتقسيم العملاء، وتحليل تأثير الإعلانات ووسائل التواصل، ورسوم مناسبة للتقارير وعرض النتائج."
+  },
+  {
+    "id": "project_uber",
+    "title": "Uber Data Analysis Dashboard – Power BI / لوحة تحليل بيانات أوبر",
+    "category": "project",
+    "content": "Uber Data Analysis Dashboard is a complete analysis dashboard that provides insights into Uber booking performance and customer behavior. The project includes data cleaning and processing, KPI reporting, and visuals that summarize booking statuses, payment types, and monthly trends. Tools and technologies include Power BI, Microsoft Excel, and KPI Design. Key features include booking status breakdown such as completed and cancelled, payment method analysis and performance insights, monthly and trend-based reporting, and a clear business-friendly dashboard layout.\n\nلوحة تحليل بيانات أوبر هي لوحة تحليل متكاملة تقدم رؤى حول أداء حجوزات Uber وسلوك العملاء. يشمل المشروع تنظيف البيانات ومعالجتها وعرض KPIs ورسومًا تلخص حالات الحجز وطرق الدفع والاتجاهات الشهرية. وتشمل الأدوات والتقنيات Power BI وMicrosoft Excel وتصميم مؤشرات الأداء. ومن أهم المميزات: تفصيل حالات الحجز مثل المكتمل والملغي، وتحليل طرق الدفع ورؤى الأداء، وتقارير شهرية واتجاهات زمنية، وتصميم واضح ومناسب للأعمال."
+  },
+  {
+    "id": "project_revenue",
+    "title": "Revenue Tracking Dashboard by Product and Region / لوحة تتبع الإيرادات حسب المنتج والمنطقة",
+    "category": "project",
+    "content": "Revenue Tracking Dashboard by Product and Region is a Power BI dashboard focused on tracking revenue performance across products and regions. It includes a comprehensive overview of revenue distribution, product performance insights, regional comparisons, and trend analysis over time. The dashboard is designed for reporting and decision making with clear KPIs and visuals. Tools and technologies include Power BI, KPI Cards, and Visual Analytics. Key features include revenue distribution across product categories, regional performance comparison and breakdown, trend analysis over time, and a summary of top-performing products and regions.\n\nلوحة تتبع الإيرادات حسب المنتج والمنطقة هي لوحة Power BI تركز على تتبع أداء الإيرادات عبر المنتجات والمناطق. تتضمن نظرة شاملة لتوزيع الإيرادات ورؤى أداء المنتجات ومقارنات المناطق وتحليل الاتجاهات عبر الزمن. وتم تصميم اللوحة للتقارير ودعم اتخاذ القرار عبر KPIs ورسوم واضحة. وتشمل الأدوات والتقنيات Power BI وبطاقات KPI والتحليلات البصرية. ومن أهم المميزات: توزيع الإيرادات حسب فئات المنتجات، ومقارنة أداء المناطق وتفصيلها، وتحليل الاتجاهات عبر الزمن، وتلخيص أعلى المنتجات والمناطق أداءً."
+  },
+  {
+    "id": "projects_summary",
+    "title": "Projects Summary / ملخص المشاريع",
+    "category": "projects",
+    "content": "Mawda's projects cover AI-powered safety systems, interview evaluation systems, business dashboards, sales analytics, housing price prediction, customer behavior analytics, Uber booking analysis, and revenue tracking dashboards.\n\nتغطي مشاريع مودة أنظمة سلامة مدعومة بالذكاء الاصطناعي، وأنظمة تقييم مقابلات، ولوحات أعمال، وتحليلات مبيعات، وتوقع أسعار المنازل، وتحليلات سلوك العملاء، وتحليل حجوزات أوبر، ولوحات تتبع الإيرادات."
+  }
+]
