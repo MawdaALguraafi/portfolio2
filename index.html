@@ -2279,25 +2279,27 @@ html[data-theme="light"] .user-msg{
   }
 }
 
-@media (max-width: 480px){
+/* ===== MOBILE TIMELINE FIX ===== */
+
+/* 📱 تحت 768 */
+@media (max-width: 768px){
+
   .timeline-modern article,
   html[dir="rtl"] .timeline-modern article,
   html[dir="rtl"] .timeline-modern article:nth-child(odd),
   html[dir="rtl"] .timeline-modern article:nth-child(even){
-    padding: 0 0 16px 38px !important;
+    padding: 0 14px 18px 42px !important; /* 👈 زدنا يمين */
   }
 
   .timeline-modern::before{
-    left: 16px !important;
+    left: 18px !important;
   }
 
-  .timeline-modern article::before,
-  html[dir="rtl"] .timeline-modern article::before{
-    left: 9px !important;
+  .timeline-modern article::before{
+    left: 11px !important;
   }
 
-@media (max-width: 768px){
-
+  /* الكروت */
   .timeline-card,
   .edu-card{
     width: 100%;
@@ -2315,7 +2317,6 @@ html[data-theme="light"] .user-msg{
   .timeline-meta{
     font-size: 10px;
     margin-bottom: 6px;
-    line-height: 1.3;
   }
 
   .exp-list{
@@ -2329,9 +2330,24 @@ html[data-theme="light"] .user-msg{
     font-size: 10.5px;
     line-height: 1.5;
   }
-
 }
+
+
+/* 📱📱 تحت 480 */
 @media (max-width: 480px){
+
+  .timeline-modern article{
+    padding: 0 16px 16px 38px !important; /* 👈 فراغ يمين أوضح */
+  }
+
+  .timeline-modern::before{
+    left: 16px !important;
+  }
+
+  .timeline-modern article::before{
+    left: 9px !important;
+  }
+
   .timeline-card,
   .edu-card{
     padding: 11px 10px;
@@ -2353,8 +2369,8 @@ html[data-theme="light"] .user-msg{
     font-size: 11px;
     line-height: 1.55;
   }
-}
 
+}
 </style>
 
 
