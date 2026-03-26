@@ -2284,38 +2284,27 @@ html[data-theme="light"] .user-msg{
    TIMELINE MOBILE ALIGN FIX
    ========================= */
 
-/* 📱 تحت 768px */
+/* ===== MOBILE TIMELINE FIX ===== */
+
+/* 📱 تحت 768 */
 @media (max-width: 768px){
 
-  /* نفس عرض السكاشن (زي About) */
-  .timeline-modern{
-    padding: 0 20px;
-  }
-
-  /* ترتيب العناصر */
   .timeline-modern article,
   html[dir="rtl"] .timeline-modern article,
   html[dir="rtl"] .timeline-modern article:nth-child(odd),
   html[dir="rtl"] .timeline-modern article:nth-child(even){
-    width: 100% !important;
-    left: 0 !important;
-    padding: 0 0 18px 38px !important; /* مكان الخط فقط */
-    box-sizing: border-box;
+    padding: 0 14px 18px 42px !important; /* 👈 زدنا يمين */
   }
 
-  /* خط التايملاين */
   .timeline-modern::before{
     left: 18px !important;
-    transform: none !important;
   }
 
-  /* النقطة */
   .timeline-modern article::before{
     left: 11px !important;
-    right: auto !important;
   }
 
-  /* الكارد */
+  /* الكروت */
   .timeline-card,
   .edu-card{
     width: 100%;
@@ -2323,7 +2312,6 @@ html[data-theme="light"] .user-msg{
     border-radius: 12px;
   }
 
-  /* النص */
   .timeline-head h3,
   .edu-card h3{
     font-size: 12px;
@@ -2350,15 +2338,11 @@ html[data-theme="light"] .user-msg{
 }
 
 
-/* 📱📱 تحت 480px (شاشات أصغر) */
+/* 📱📱 تحت 480 */
 @media (max-width: 480px){
 
-  .timeline-modern{
-    padding: 0 20px;
-  }
-
   .timeline-modern article{
-    padding: 0 0 16px 34px !important;
+    padding: 0 10px 16px 38px !important; /* 👈 فراغ يمين أوضح */
   }
 
   .timeline-modern::before{
