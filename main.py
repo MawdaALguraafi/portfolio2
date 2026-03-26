@@ -39,9 +39,11 @@ print("MODEL:", MODEL_NAME)
 class ChatRequest(BaseModel):
     question: str
 
-
 def is_arabic(text: str) -> bool:
-    return bool(re.search(r"[\u0600-\u06FF]", text))
+    arabic = re.findall(r"[\u0600-\u06FF]", text)
+    english = re.findall(r"[A-Za-z]", text)
+
+    return len(arabic) > len(english)
 
 
 def fix_mixed_text(text: str) -> str:
