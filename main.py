@@ -39,15 +39,17 @@ print("MODEL:", MODEL_NAME)
 class ChatRequest(BaseModel):
     question: str
 
+
 def is_arabic(text: str) -> bool:
-    arabic = re.findall(r"[\u0600-\u06FF]", text)
-    english = re.findall(r"[A-Za-z]", text)
-    return len(arabic) >= len(english)
+    """Detect if the input contains Arabic characters."""
+    return bool(re.search(r"[\u0600-\u06FF]", str(text or "")))
 
 
 def fix_mixed_text(text: str) -> str:
-    text = re.sub(r'و([A-Za-z])', r'و \1', text)
-    text = re.sub(r'\s+', ' ', text).strip()
+    """Small cleanup for mixed Arabic/English spacing."""
+    text = str(text or "")
+    text = re.sub(r"و([A-Za-z])", r"و \1", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
@@ -87,7 +89,14 @@ def retrieve_chunks(question: str, top_k: int = 3):
     return [item for _, item in scored_results[:top_k]]
 
 
-def build_context(matches):
+def build_context(matches, lang: str = "en") -> str:
+    """Build context in the same language style as the user's question."""
+    if lang == "ar":
+        return "\n\n".join(
+            f"العنوان: {item.get('title', '')}\nالمحتوى: {item.get('content', '')}"
+            for item in matches
+        )
+
     return "\n\n".join(
         f"Title: {item.get('title', '')}\nContent: {item.get('content', '')}"
         for item in matches
@@ -108,13 +117,26 @@ def clean_arabic_response(text: str) -> str:
         if re.search(pattern, text):
             return "هذه المعلومة غير مذكورة في البورتفوليو."
 
-    text = text.replace("This information is not mentioned in the portfolio.", "هذه المعلومة غير مذكورة في البورتفوليو.")
-    text = text.replace("The context does not provide information about", "هذه المعلومة غير مذكورة في البورتفوليو.")
-    text = text.replace("based on the context", "")
-    text = text.replace("according to the context", "")
+    replacements = {
+        "This information is not mentioned in the portfolio.": "هذه المعلومة غير مذكورة في البورتفوليو.",
+        "Mawda works with": "تعمل مودة باستخدام",
+        "Mawda has skills in": "تمتلك مودة مهارات في",
+        "Mawda's portfolio includes": "يتضمن بورتفوليو مودة",
+        "based on the context": "",
+        "according to the context": "",
+    }
+
+    for src, target in replacements.items():
+        text = text.replace(src, target)
 
     text = fix_mixed_text(text)
     text = re.sub(r"\s+", " ", text).strip()
+
+    # If the reply is still mostly English, return a safe Arabic fallback
+    arabic_chars = len(re.findall(r"[\u0600-\u06FF]", text))
+    english_words = len(re.findall(r"[A-Za-z]{3,}", text))
+    if arabic_chars < 3 and english_words > 4:
+        return "هذه المعلومة غير مذكورة في البورتفوليو."
 
     return text
 
@@ -125,82 +147,87 @@ def clean_english_response(text: str) -> str:
     if "هذه المعلومة غير مذكورة في البورتفوليو" in text:
         return "This information is not mentioned in the portfolio."
 
+    # Remove Arabic if any leaked into the English answer
     text = re.sub(r"[\u0600-\u06FF]+", "", text)
     text = re.sub(r"\s+", " ", text).strip()
 
     return text
 
 
-async def generate_rag_answer(question: str, context: str, lang: str):
+async def generate_rag_answer(question: str, context: str, lang: str) -> str:
     if lang == "ar":
-        system_prompt = f"""
+        system_prompt = """
 أنت مساعد ذكي خاص ببورتفوليو مودة القرافي.
 
-🔒 قواعد صارمة:
-- السؤال هو:
-{question}
+الهدف:
+تقديم إجابات دقيقة، احترافية، وسريعة عن خبرات ومهارات ومشاريع مودة.
 
-- بما أن السؤال مكتوب بالعربية → يجب أن يكون الرد بالعربية فقط.
-- ممنوع الرد باللغة الإنجليزية حتى لو كان المحتوى إنجليزي.
-- أسماء الأدوات فقط تبقى بالإنجليزية مثل: Python, SQL, Power BI, Tableau.
-
-- إذا لم توجد الإجابة:
+قواعد صارمة:
+- إذا كان سؤال المستخدم بالعربية، يجب أن تكون الإجابة بالعربية فقط.
+- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل: Python, SQL, Power BI, Tableau, FastAPI, Streamlit.
+- لا تبدأ الجواب بأي جملة إنجليزية.
+- لا تنسخ النص الإنجليزي من السياق كما هو.
+- أعد صياغة المعلومات داخل جمل عربية طبيعية وواضحة.
+- لا تضف أي معلومات غير موجودة في السياق.
+- إذا لم توجد الإجابة في السياق، قل فقط:
 هذه المعلومة غير مذكورة في البورتفوليو.
 
-✍️ الأسلوب:
-- إجابة قصيرة (جملة أو جملتين)
-- مباشرة بدون مقدمات
-- صياغة عربية طبيعية (ليست ترجمة حرفية)
+أسلوب الإجابة:
+- اجعل الإجابة مختصرة جدًا: جملة إلى جملتين كحد أقصى.
+- استخدم أسلوبًا بشريًا طبيعيًا، وليس ترجمة حرفية.
+- ابدأ الإجابة مباشرة دون مقدمات مثل: بالتأكيد، حسب المعلومات، بناءً على السياق.
+- ركّز على المعلومة المهمة فقط.
 """
-    else:system_prompt = """
+    else:
+        system_prompt = """
 You are a portfolio assistant for Mawda Alguraafi.
 
-🎯 Goal:
-Provide accurate, professional, and fast answers about Mawda’s experience, skills, and projects.
+Goal:
+Provide accurate, professional, and fast answers about Mawda's experience, skills, and projects.
 
-🔒 Strict rules:
+Strict rules:
 - Answer only in English.
 - Do not use Arabic at all.
 - Do not mix languages.
-- Do not add any information not موجود in the context.
+- Do not add any information not found in the context.
 - If the answer is not found, say exactly:
 This information is not mentioned in the portfolio.
 
-✍️ Style:
-- Keep answers short (1–2 sentences max).
+Style:
+- Keep answers short: 1-2 sentences maximum.
 - Sound natural and human, not robotic.
-- Start directly with the answer (no fillers like "Sure" or "Based on").
+- Start directly with the answer.
+- Do not use fillers such as: Sure, Based on the context, According to the context.
 - Focus only on the key information.
-
-⚡ Performance:
-- Respond immediately without overthinking or long explanations.
 """
 
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:8000",
-        "X-Title": "Mawda Portfolio"
+        "HTTP-Referer": "https://portfolio2-rme6.onrender.com",
+        "X-Title": "Mawda Portfolio",
     }
+
+    if lang == "ar":
+        user_prompt = f"السؤال:\n{question}\n\nالسياق:\n{context}"
+    else:
+        user_prompt = f"Question:\n{question}\n\nContext:\n{context}"
 
     payload = {
         "model": MODEL_NAME,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {
-                "role": "user",
-                "content": f"Question:\n{question}\n\nContext:\n{context}"
-            }
+            {"role": "user", "content": user_prompt},
         ],
         "temperature": 0,
-        "max_tokens": 120
+        "max_tokens": 140,
     }
 
     async with httpx.AsyncClient(timeout=20.0) as client:
         response = await client.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers=headers,
-            json=payload
+            json=payload,
         )
 
         print("STATUS:", response.status_code)
@@ -230,8 +257,8 @@ async def test_openrouter():
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:8000",
-        "X-Title": "Mawda Portfolio"
+        "HTTP-Referer": "https://portfolio2-rme6.onrender.com",
+        "X-Title": "Mawda Portfolio",
     }
 
     payload = {
@@ -240,7 +267,7 @@ async def test_openrouter():
             {"role": "user", "content": "Say hello in one short sentence."}
         ],
         "temperature": 0,
-        "max_tokens": 20
+        "max_tokens": 20,
     }
 
     try:
@@ -248,7 +275,7 @@ async def test_openrouter():
             response = await client.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers=headers,
-                json=payload
+                json=payload,
             )
 
         try:
@@ -258,13 +285,13 @@ async def test_openrouter():
 
         return {
             "status_code": response.status_code,
-            "body": body
+            "body": body,
         }
 
     except Exception as e:
         return {
             "status": "error",
-            "message": str(e)
+            "message": str(e),
         }
 
 
@@ -297,7 +324,7 @@ async def chat(req: ChatRequest):
             else "This information is not mentioned in the portfolio."
         }
 
-    context = build_context(matches)
+    context = build_context(matches, lang)
 
     try:
         answer = await generate_rag_answer(question, context, lang)
