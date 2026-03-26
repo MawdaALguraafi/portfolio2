@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="page_title">Projects | Mawda Alguraafi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#07030f;
+    --panel: #120522;
+  --bg1:#120522;
+  --text:#ece7ff;
+  --muted:rgba(236,231,255,.72);
+  --accent:#a36bff;
+  --accent2:#7c3cff;
+  --max:980px;
+  /* Figma-like */
+  --purple-g-1:#130428;
+  --purple-g-2:#251043;
+  --purple-g-3:#38126D;
+  --purple-g-4:#261045;
+  --purple-g-5:#190634;
+  --figma-grad: linear-gradient(
+    135deg,
+    var(--purple-g-1) 7%,
+    var(--purple-g-2) 34%,
+    var(--purple-g-3) 57%,
+    var(--purple-g-4) 85%,
+    var(--purple-g-5) 100%
+  );
+  --figma-grad-hover: linear-gradient(135deg, var(--purple-g-2), var(--purple-g-3), var(--purple-g-5));
+  --figma-border: rgba(255,255,255,.14);
+  --figma-glow: 0 10px 22px rgba(56,18,109,.26);
+  --figma-glow-strong: 0 16px 34px rgba(56,18,109,.30);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 50% 10%, rgba(163,107,255,.20), transparent 60%),
+    radial-gradient(700px 500px at 50% 45%, rgba(124,60,255,.18), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1) 55%, #0b0416);
+  overflow-x:hidden;
+}
+
+/* LIGHT THEME OVERRIDE */
+html[data-theme="light"]{
+  --bg0:#ffffff;
+  --bg1:#ffffff;
+  --panel:#ffffff;
+  --panel2:#ffffff;
+  --stroke: rgba(30,20,70,.10);
+  --text:#141225;
+  --muted: rgba(20,18,37,.70);
+  --muted2: rgba(20,18,37,.55);
+  --accent:#5b47ff;
+  --accent2:#7c6cff;
+  --shadow: 0 18px 40px rgba(20,18,37,.08);
+  --shadow2: 0 10px 22px rgba(20,18,37,.06);
+  --purple-g-1:#5b47ff;
+  --purple-g-2:#6a55ff;
+  --purple-g-3:#7c6cff;
+  --purple-g-4:#6a55ff;
+  --purple-g-5:#5b47ff;
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(900px 500px at 50% 0%, rgba(91,71,255,.06), transparent 62%),
+    linear-gradient(180deg, #ffffff, #ffffff);
+  color: var(--text);
+}
+html[data-theme="light"] .hero h1{ color: var(--text); text-shadow:none; }
+html[data-theme="light"] .name{ color: var(--accent); text-shadow:none; }
+html[data-theme="light"] .hero p{ color: var(--muted); }
+html[data-theme="light"] .topbar{
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+html[data-theme="light"] .nav-item{ color: rgba(20,18,37,.70) !important; }
+html[data-theme="light"] .nav-item:hover{ color: rgba(20,18,37,.95) !important; }
+html[data-theme="light"] .panel,
+html[data-theme="light"] .skill,
+html[data-theme="light"] .card{
+  background: #ffffff;
+  border: 1px solid rgba(30,20,70,.10);
+  box-shadow: var(--shadow2);
+}
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .card h3,
+html[data-theme="light"] .skill h4{ color: rgba(20,18,37,.96); }
+html[data-theme="light"] .about p,
+html[data-theme="light"] .card p,
+html[data-theme="light"] .subhead{ color: var(--muted); }
+html[data-theme="light"] .skill small{ color: var(--muted2); }
+html[data-theme="light"] .btn{
+  border-color: rgba(91,71,255,.16);
+  background: rgba(91,71,255,.08);
+  color: rgba(20,18,37,.92);
+}
+html[data-theme="light"] .hero .cta .btn,
+html[data-theme="light"] .btn.mini,
+html[data-theme="light"] .iconbtn,
+html[data-theme="light"] .nav-item.active{
+  background: linear-gradient(135deg, var(--accent), var(--accent2)) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  color:#fff !important;
+  box-shadow: 0 12px 26px rgba(91,71,255,.22) !important;
+}
+html[data-theme="light"] .thumb{
+  background: #fbfaff;
+  border-color: rgba(91,71,255,.12);
+}
+html[data-theme="light"] .thumb::after{ opacity: .08; }
+html[data-theme="light"] .orbit-image{ opacity:.22; filter:saturate(.85); }
+html[data-theme="light"] footer{
+  background: #ffffff;
+  border-top: 1px solid rgba(30,20,70,.10);
+}
+html[data-theme="light"] .foot h4{ color: rgba(20,18,37,.95); }
+html[data-theme="light"] .foot p,
+html[data-theme="light"] .foot a,
+html[data-theme="light"] .footer-bottom{ color: rgba(20,18,37,.65) !important; }
+html[data-theme="light"] .chip{
+  background: rgba(91,71,255,.12);
+  color: #2a1f6b;
+  border: 1px solid rgba(91,71,255,.35);
+  font-weight: 600;
+}
+html[data-theme="light"] .chip:hover{ background: rgba(91,71,255,.20); }
+html[data-theme="light"] .chip.secondary{
+  background: rgba(20,18,37,.08);
+  color: rgba(20,18,37,.85);
+  border-color: rgba(20,18,37,.18);
+}
+
+a{color:inherit;text-decoration:none}
+.container{width:min(var(--max), calc(100% - 40px)); margin:0 auto;}
+
+/* Animations */
+[data-animate]{opacity:0; animation-duration:.9s; animation-fill-mode:forwards; animation-timing-function:cubic-bezier(.22,.61,.36,1); will-change: transform, opacity;}
+@keyframes slideInRight{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInLeft {from{opacity:0;transform:translateX(-70px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInUp   {from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+[data-animate="right"]{animation-name:slideInRight}
+[data-animate="left"]{animation-name:slideInLeft}
+[data-animate="up"]{animation-name:slideInUp}
+.delay-1{animation-delay:.12s}
+.delay-2{animation-delay:.24s}
+.delay-3{animation-delay:.36s}
+.delay-4{animation-delay:.48s}
+.delay-5{animation-delay:.60s}
+@media (prefers-reduced-motion: reduce){
+  [data-animate]{animation:none !important; opacity:1 !important; transform:none !important;}
+}
+
+/* =================================================
+   HEADER / NAV – CLEAN (ONLY THIS PART CHANGED)
+   ================================================= */
+
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  padding: 6px 0 14px;
+  backdrop-filter: blur(12px);
+}
+
+/* Dark */
+html[data-theme="dark"] .topbar{
+  background: linear-gradient(180deg, rgba(6,3,14,.78), rgba(6,3,14,.35));
+  border-bottom: 1px solid rgba(163,107,255,.12);
+}
+
+/* Light */
+html[data-theme="light"] .topbar{
+  background: rgba(255,255,255,.92);
+  border-bottom: 1px solid rgba(30,20,70,.10);
+}
+
+/* رفع محتوى الهيدر */
+.topbar > .container{
+  transform: translateY(-6px);
+}
+@media (max-width: 768px){
+  .topbar > .container{ transform: translateY(-3px); }
+}
+
+.nav-pill{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 16px 0;
+}
+
+.nav-center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  white-space: nowrap;
+}
+
+.nav-item{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  color: rgba(236,231,255,.75);
+  z-index: 1;
+  transition: color .18s ease;
+}
+
+/* interactive pill */
+.nav-item::before{
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 26px);
+  height: 40px;
+  border-radius: 999px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+html[data-theme="dark"] .nav-item::before{
+  background: rgba(163,107,255,.14);
+  border: 1px solid rgba(163,107,255,.22);
+  box-shadow: 0 10px 22px rgba(124,60,255,.22);
+}
+html[data-theme="light"] .nav-item::before{
+  background: rgba(122,99,230,.16);
+  border: 1px solid rgba(122,99,230,.26);
+}
+
+/* ✅ Hover فقط (بدون تثبيت) */
+@media (hover:hover){
+  .nav-item:hover::before{ opacity: 1; }
+}
+
+/* ✅ Touch بالجوال */
+@media (max-width: 768px){
+  .nav-item:active::before{ opacity: 1; }
+}
+
+/* ❌ إلغاء أي تثبيت (حتى لو فيه active بالـHTML) */
+.nav-item.active::before,
+.nav-item[aria-current="page"]::before{
+  opacity: 0 !important;
+}
+
+/* ❌ نكسر ستايل light اللي يلوّن active */
+.nav-item.active{
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .nav-item.active{
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(20,18,37,.70) !important;
+}
+
+/* right buttons */
+.lang-switch{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 10px;
+}
+html[dir="rtl"] .lang-switch{
+  right: auto;
+  left: 0;
+}
+
+.icon-toggle{
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(163,107,255,.18);
+  background: rgba(163,107,255,.10);
+  color: rgba(236,231,255,.86);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+}
+.icon-toggle svg{
+  width: 18px;
+  height: 18px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: currentColor !important;
+}
+.icon-toggle:hover{
+  transform: translateY(-1px);
+  background: rgba(163,107,255,.14);
+  color: rgba(236,231,255,.98);
+  box-shadow: 0 10px 22px rgba(56,18,109,.22);
+}
+
+/* LIGHT THEME icon-toggle */
+html[data-theme="light"] .icon-toggle{
+  background: rgba(91,71,255,.10);
+  border-color: rgba(91,71,255,.22);
+  color: rgba(20,18,37,.92);
+}
+html[data-theme="light"] .icon-toggle:hover{
+  background: rgba(91,71,255,.16);
+  color: rgba(20,18,37,.98);
+  box-shadow: 0 10px 22px rgba(91,71,255,.18);
+}
+
+/* Mobile nav */
+@media (max-width: 768px){
+  .nav-pill{
+    height: 70px;
+    padding: 14px 10px;
+  }
+  .nav-center{
+    position: static;
+    transform: none;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-center::-webkit-scrollbar{ display:none; }
+  .nav-item{
+    height: 34px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .nav-item::before{
+    height: 28px;
+    width: calc(100% + 12px);
+  }
+  .lang-switch{
+    position: static;
+    transform: none;
+    gap: 6px;
+  }
+  .icon-toggle{
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* =================================================
+   FOOTER – CLEAN (ONLY THIS PART CHANGED)
+   ================================================= */
+
+footer{
+  margin-top: 72px;
+  padding: 40px 0 22px;
+  background: linear-gradient(180deg, rgba(10,4,20,.25), rgba(6,3,14,.9));
+  border-top: 1px solid rgba(163,107,255,.18);
+}
+
+.footer-inner{
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+.foot h4{
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba(236,231,255,.95);
+}
+
+.foot p{
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(236,231,255,.72);
+}
+
+
+/* quick links */
+.foot ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.foot ul a{
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: rgba(236,231,255,.75);
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.foot ul a:hover{
+  background: rgba(163,107,255,.18);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(124,60,255,.28);
+}
+
+/* social */
+.social{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.iconbtn{
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(163,107,255,.12);
+  border: 1px solid rgba(163,107,255,.22);
+  color: rgba(236,231,255,.9);
+  box-shadow: none;
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.iconbtn svg{
+  width: 18px;
+  height: 18px;
+}
+
+.iconbtn:hover{
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #7a63e6, #9a84ff);
+  box-shadow: 0 12px 24px rgba(124,60,255,.35);
+  color: #fff;
+}
+
+/* bottom */
+.footer-bottom{
+  margin-top: 22px;
+  text-align: center;
+  font-size: 12.5px;
+  color: rgba(236,231,255,.55);
+}
+
+/* Mobile footer */
+@media (max-width: 900px){
+  footer{
+    padding: 32px 0 18px;
+  }
+  .footer-inner{
+    grid-template-columns: 1fr;
+    gap: 22px;
+    text-align: center;
+  }
+  .social{
+    justify-content: center;
+  }
+  .foot ul a{
+    justify-content: center;
+  }
+}
+
+/* ===============================
+   (REST OF YOUR CSS — UNCHANGED)
+   =============================== */
+
+/* HERO */
+.hero{ padding-top: 100px; padding-bottom: 60px; text-align:center; }
+.hero-inner{ display:grid; gap:14px; justify-items:center; margin-top: 10px; }
+.hero h1{ margin:0; font-size:34px; letter-spacing:-.4px; line-height:1.15; }
+.hero p{ margin:0 auto; max-width:820px; color:var(--muted); line-height:1.75; font-size:13.8px; }
+.orbit-image-wrap{ margin: 18px 0 0; display:flex; justify-content:center; align-items:center; position:relative; height:110px; }
+.orbit-image{ width: 520px; max-width: 100%; height:auto; filter: drop-shadow(0 20px 28px rgba(0,0,0,.45)); opacity:.95; user-select:none; pointer-events:none; }
+
+/* Section */
+section{ padding: 55px 0; }
+.section-title{ margin:0 0 14px; text-align:center; font-size:22px; letter-spacing:-.2px; }
+.subhead{ text-align:center; margin:-6px 0 18px; color:var(--muted); font-size:14px; }
+
+/* Cards */
+.projects-grid{ display:grid; grid-template-columns:1fr; gap:22px; }
+.card{
+  display:grid;
+  grid-template-columns: 38% 62%;
+  gap:18px;
+  padding:16px;
+  border-radius:18px;
+  background: linear-gradient(180deg, rgba(24,9,40,.75), rgba(14,5,26,.75));
+  border: 1px solid rgba(163,107,255,.18);
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  align-items:start;
+}
+.card:hover{ transform: translateY(-6px); box-shadow: 0 28px 55px rgba(0,0,0,.55); border-color: rgba(163,107,255,.35); }
+.thumb{
+  width:100%;
+  height:220px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.18);
+}
+.thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  background: rgba(0,0,0,.25);
+}
+.card:hover .thumb img{ transform: scale(1.06); filter: saturate(1.06) contrast(1.03); }
+.card-body{ min-width:0; display:flex; flex-direction:column; }
+.card-body h3{ margin:0 0 10px; font-size:14px; font-weight:800; line-height:1.4; }
+.card-body .desc{
+  margin:0 0 12px;
+  font-size:12.7px;
+  line-height:1.75;
+  color: rgba(236,231,255,.75);
+  white-space: pre-line;
+}
+.chips{ display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 14px; }
+.chip{
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: rgba(163,107,255,.12);
+  border: 1px solid rgba(163,107,255,.22);
+  color: rgba(236,231,255,.9);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+.card:hover .chip{
+  background: rgba(163,107,255,.14);
+  border-color: rgba(163,107,255,.26);
+  box-shadow: 0 10px 20px rgba(124,60,255,.18);
+  transform: translateY(-1px);
+}
+.card-actions{ margin-top: 6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.btn{
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  color:#fff;
+  background: var(--figma-grad);
+  border: 1px solid var(--figma-border);
+  box-shadow: var(--figma-glow);
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  display:inline-flex; align-items:center; justify-content:center;
+  white-space:nowrap;
+}
+.btn:hover{ transform: translateY(-2px); background: var(--figma-grad-hover); box-shadow: var(--figma-glow-strong); }
+.iconbtn{
+  width: 40px; height: 40px;
+  min-width: 40px; min-height: 40px;
+  padding:0;
+  border-radius:999px;
+  display:grid; place-items:center;
+  background: var(--figma-grad);
+  border: 1px solid var(--figma-border);
+  color:#fff;
+  box-shadow: var(--figma-glow);
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+.iconbtn:hover{ box-shadow: var(--figma-glow-strong); transform: translateY(-1px); }
+.iconbtn svg{ width:20px; height:20px; display:block; }
+
+/* MOBILE STYLES */
+@media (max-width: 920px){
+  .card{ grid-template-columns: 1fr; }
+  .thumb{ height:200px; }
+  .footer-inner{ grid-template-columns: 1fr; gap:18px; text-align:center; }
+  .social{ justify-content:center; }
+}
+@media (max-width: 560px){
+  .hero h1{ font-size:30px; }
+  .nav-item{ padding: 0 12px; }
+}
+@media (max-width: 680px){
+  .footer-inner,
+  .foot-grid,
+  .footer-grid{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    text-align: center;
+  }
+  .foot ul,
+  .foot .links{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .foot ul li{ margin: 8px 0; }
+  .social,
+  .connect,
+  .foot .social{
+    display: flex !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  footer .iconbtn,
+  footer .social .iconbtn{
+    width: 44px;
+    height: 44px;
+  }
+  .footer-bottom{ text-align: center !important; }
+}
+
+/* 📱 Quick Links أفقي في الجوال */
+@media (max-width: 680px){
+  .foot ul{
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .foot ul li{
+    margin: 0 !important;
+  }
+
+  .foot ul a{
+    padding: 6px 12px !important;
+    white-space: nowrap;
+  }
+}
+
+/* =========================
+   MOBILE HEADER – SAME AS INDEX
+   ========================= */
+@media (max-width: 768px){
+
+  .nav-pill{
+    height: 68px;
+    padding: 12px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-center{
+    position: static;
+    transform: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;              /* نفس القاب الاندكس */
+    white-space: nowrap;
+  }
+
+  .nav-item{
+    height: 34px;
+    padding: 6px 8px;
+    line-height: 1;
+  }
+
+  .nav-item::before{
+    height: 28px;
+    width: calc(100% + 12px);
+  }
+
+  .lang-switch{
+    position: static;
+    transform: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-toggle{
+    width: 34px;
+    height: 34px;
+  }
+
+  /* English */
+  html[dir="ltr"] .nav-pill{
+    flex-direction: row;
+  }
+  html[dir="ltr"] .nav-center{
+    margin-right: auto;
+  }
+
+  html[dir="rtl"] .nav-center{
+    margin-left: auto;
+  }
+}
+/* ✅ FINAL FIX — Mobile: icons move side based on dir */
+@media (max-width: 768px){
+
+  /* 1) فك التثبيت القديم (absolute right/left) */
+  .lang-switch{
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+
+  /* 2) خلي الهيدر flex طبيعي */
+  .nav-pill{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+  }
+
+  /* 3) LTR: الروابط يسار + الأيقونات يمين */
+  html[dir="ltr"] .nav-center{ margin-right: auto !important; margin-left: 0 !important; }
+  html[dir="ltr"] .lang-switch{ margin-left: auto !important; margin-right: 0 !important; }
+
+  /* 4) RTL: الروابط يمين + الأيقونات يسار */
+  html[dir="rtl"] .nav-center{ margin-left: auto !important; margin-right: 0 !important; }
+  html[dir="rtl"] .lang-switch{ margin-right: auto !important; margin-left: 0 !important; }
+}
+/* ✅ Arabic only (RTL) — match Index mobile gap + size */
+@media (max-width: 768px){
+  html[dir="rtl"] .nav-center{
+    gap: 4px !important;            /* نفس الاندكس */
+  }
+
+  html[dir="rtl"] .nav-item{
+    height: 34px !important;
+    padding: 4px 6px !important;
+    font-size: 11.5px !important;
+    line-height: 1 !important;
+  }
+}
+:root{
+  --panel: #120522;
+}
+
+/* ===== Chat Toggle Button ===== */
+.chat-toggle{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 14px 30px rgba(0,0,0,.28);
+}
+
+/* RTL position for toggle */
+html[dir="rtl"] .chat-toggle{
+  right: auto;
+  left: 24px;
+}
+
+/* ===== Chat Window ===== */
+.chat-window{
+  position: fixed;
+  right: 24px;
+  bottom: 94px;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  height: 480px;
+  max-height: 70vh;
+  background: var(--panel);
+  border: 1px solid rgba(163,107,255,.2);
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,.35);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html[dir="rtl"] .chat-window{
+  right: auto;
+  left: 24px;
+}
+
+.hidden{
+  display: none;
+}
+
+/* ===== Chat Header ===== */
+.chat-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(163,107,255,.16);
+}
+
+.chat-header strong{
+  font-size: 14px;
+}
+
+#chatClose{
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  position: relative;
+  z-index: 1005;
+  pointer-events: auto;
+}
+
+/* ===== Messages Area ===== */
+#chatMessages{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.chat-message,
+.bot-msg,
+.user-msg{
+  max-width: 80%;
+  width: fit-content;
+  padding: 12px 14px;
+  border-radius: 18px;
+  line-height: 1.7;
+  word-break: break-word;
+  white-space: normal;
+  font-size: 13px;
+}
+
+/* Bot message */
+.bot-msg{
+  align-self: flex-start;
+  text-align: left;
+  direction: ltr;
+  border-bottom-left-radius: 6px;
+  background: rgba(163,107,255,.10);
+  border: 1px solid rgba(163,107,255,.14);
+}
+
+/* User message */
+.user-msg{
+  align-self: flex-end;
+  text-align: left;
+  direction: ltr;
+  border-bottom-right-radius: 6px;
+  background: rgba(255,255,255,.08);
+}
+
+/* Arabic messages */
+.bot-msg.ar,
+.user-msg.ar{
+  direction: rtl;
+  text-align: right;
+}
+
+/* English messages */
+.bot-msg.en,
+.user-msg.en{
+  direction: ltr;
+  text-align: left;
+}
+
+/* English words inside Arabic */
+.ltr{
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* ===== Chat Form ===== */
+.chat-form{
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid rgba(163,107,255,.16);
+}
+
+.chat-form input{
+  flex: 1;
+  min-width: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(163,107,255,.2);
+  background: transparent;
+  color: inherit;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.chat-form button{
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  white-space: nowrap;
+}
+
+/* ===== Light Theme ===== */
+html[data-theme="light"] .bot-msg{
+  background: #f1f5ff;
+  border: 1px solid #dbe3ff;
+  color: #1f2937;
+}
+
+html[data-theme="light"] .user-msg{
+  background: #5b47ff;
+  color: #ffffff;
+}
+
+/* ===== RTL Alignment Override ===== */
+html[dir="rtl"] .user-msg,
+html[dir="rtl"] .bot-msg{
+  text-align: right;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 768px){
+  .chat-toggle{
+    bottom: 14px;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+
+  html[dir="ltr"] .chat-toggle{
+    right: 14px;
+    left: auto;
+  }
+
+  html[dir="rtl"] .chat-toggle{
+    left: 14px;
+    right: auto;
+  }
+
+  .chat-window{
+    right: 10px;
+    left: 10px;
+    bottom: 76px;
+    width: auto;
+    max-width: none;
+    height: 62vh;
+    max-height: 520px;
+    border-radius: 16px;
+  }
+
+  .chat-header{
+    padding: 12px 14px;
+  }
+
+  #chatMessages{
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .chat-message,
+  .bot-msg,
+  .user-msg{
+    max-width: 88%;
+    padding: 10px 12px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .chat-form{
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .chat-form input{
+    font-size: 13px;
+    padding: 10px 11px;
+  }
+
+  .chat-form button{
+    padding: 10px 12px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 480px){
+  .chat-window{
+    bottom: 72px;
+    height: 60vh;
+  }
+
+  .chat-message,
+  .bot-msg,
+  .user-msg{
+    max-width: 92%;
+    font-size: 12px;
+  }
+
+  .chat-form button{
+    min-width: 68px;
+    padding: 10px;
+  }
+}
+</style>
+
+
+</head>
+<body>
+<!-- NAV -->
+<div class="topbar" data-animate="up">
+  <div class="container">
+    <nav class="nav-pill">
+      <div class="nav-center">
+        <a class="nav-item" href="index.html#home" data-i18n="nav_home">Home</a>
+        <a class="nav-item" href="index.html#about" data-i18n="nav_about">About</a>
+        <a class="nav-item" href="#connect" data-i18n="nav_connect">Connect</a>
+        <a class="nav-item" href="projects.html" data-i18n="nav_projects" aria-current="page">Projects</a>
+      </div>
+
+      <div class="lang-switch" aria-label="Language & Theme Switch">
+        <button type="button" id="langToggle" class="icon-toggle" aria-label="Toggle Language" title="Language">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 2c3 3.5 3 16.5 0 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 2c-3 3.5-3 16.5 0 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button type="button" id="themeToggle" class="icon-toggle" aria-label="Toggle Theme" title="Theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 a7 7 0 1 0 11.5 11.5Z"
+              stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="home">
+<div class="container">
+<div class="hero-inner">
+<h1 data-animate="up" class="delay-1" data-i18n="hero_title">Featured Projects</h1>
+<p data-animate="up" class="delay-2" data-i18n="hero_desc">
+A selection of projects across AI, data analysis, and interactive dashboards.
+</p>
+<div class="orbit-image-wrap" aria-hidden="true" data-animate="up" class="delay-3">
+<img src="Image/Skills.png" alt="" class="orbit-image">
+</div>
+</div>
+</div>
+</header>
+<!-- PROJECTS -->
+<section id="projects">
+<div class="container">
+<h2 class="section-title" data-animate="up" data-i18n="sec_title">Projects</h2>
+<p class="subhead" data-animate="up" class="delay-1" data-i18n="sec_subhead">Explore the full details of each project below.</p>
+<div class="projects-grid">
+<article class="card" id="nabahah" data-animate="left" class="delay-1">
+<div class="thumb"><img src="Image/1.png" alt="Nabāhah"></div>
+<div class="card-body">
+<h3 data-i18n="p1_title">Nabāhah (نباهة) – Intelligent Laboratory Safety Monitoring System</h3>
+<p class="desc" data-i18n="p1_desc">Nabāhah (نباهة) is an AI-powered laboratory safety monitoring system designed to enhance safety compliance and reduce risks in laboratory environments. It uses computer vision to detect PPE compliance (lab coat, gloves, mask, goggles), red-zone violations, and hazards such as spills, smoke, and fire, and then generates alerts and analytics through a dashboard.
+Technologies Used:
+Python, FastAPI, YOLOv8 (Ultralytics), OpenCV, Supabase, SQL, Chart.js, Edge-TTS
+Key Features:
+- Real-time PPE detection and safety violations monitoring
+- Hazard detection (spill / smoke / fire) with alert logic
+- Dashboard analytics with KPIs, charts, and database viewer
+- Model toggles management (enable/disable models) and logging of detections and alerts
+- Bilingual UI (Arabic/English) with a smooth language switch</p>
+<div class="chips">
+<span class="chip">YOLOv8</span><span class="chip">FastAPI</span><span class="chip">Supabase</span><span class="chip">Chart.js</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/NABAHAH" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="interviewsense" data-animate="right" class="delay-2">
+<div class="thumb"><img src="Image/3.png" alt="InterviewSense"></div>
+<div class="card-body">
+<h3 data-i18n="p2_title">InterviewSense – AI Interview Evaluation System</h3>
+<p class="desc" data-i18n="p2_desc">InterviewSense is an AI-powered system that evaluates job applicants by analyzing speech, text, and facial expressions. It combines speech-to-text conversion, text similarity analysis, and facial emotion recognition (FER) to provide objective assessments.
+Technologies Used:
+Python, Flask, JavaScript, AssemblyAI, DeepFace, FER Library
+Datasets:
+LibriSpeech, FER2013, Customized FER, Modified ARTJI
+Key Features:
+- Automatic speech recognition (ASR)
+- Question & answer generation using ChatGPT
+- Text similarity analysis with cosine & Jaccard metrics
+- Facial emotion recognition for candidate evaluation</p>
+<div class="chips">
+<span class="chip">Flask</span><span class="chip">AssemblyAI</span><span class="chip">DeepFace</span><span class="chip">NLP</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/InterviewSense" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="adidas" data-animate="left" class="delay-3">
+<div class="thumb"><img src="Image/4.png" alt="Adidas Dashboard"></div>
+<div class="card-body">
+<h3 data-i18n="p3_title">Adidas Sales Dashboard – EDA & Interactive Visualization</h3>
+<p class="desc" data-i18n="p3_desc">Adidas Sales Dashboard – EDA & Interactive Visualization
+This repository contains a complete Exploratory Data Analysis (EDA), data cleaning, and interactive dashboard project for Adidas sales data. Built with Python, Pandas, Matplotlib, Streamlit, and Plotly.
+Features
+Data Cleaning & Preprocessing
+- Remove missing or invalid values
+- Convert dates to datetime objects
+- Standardize numeric and currency columns
+Exploratory Data Analysis (EDA)
+- Summary statistics with .describe()
+- Random samples and quick insights
+- Visualizations of sales trends, regional performance, and product performance
+Interactive Dashboard
+- Built with Streamlit
+- Interactive filters and dynamic charts
+- Clear KPI cards and business-focused insights</p>
+<div class="chips">
+<span class="chip">Python</span><span class="chip">Pandas</span><span class="chip">Streamlit</span><span class="chip">Plotly</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/Adidas_Sales_EDA" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="king-county" data-animate="right" class="delay-4">
+<div class="thumb"><img src="Image/2.png" alt="King County"></div>
+<div class="card-body">
+<h3 data-i18n="p4_title">King County – Housing Sales Dashboard & Price Prediction</h3>
+<p class="desc" data-i18n="p4_desc">King County – Housing Sales Dashboard & Price Prediction
+A complete analytics project for housing sales data. It includes data cleaning, exploratory analysis, feature engineering, and building machine learning models to predict house prices. The project focuses on generating clear insights and supporting decision-making using visualizations and evaluation metrics.
+Technologies Used:
+Python, Pandas, NumPy, Matplotlib, Scikit-learn
+Key Steps:
+- Data cleaning and handling missing values
+- Feature engineering and correlation analysis
+- Model training and evaluation (regression)
+- Visualizations for trends and important factors impacting price</p>
+<div class="chips">
+<span class="chip">EDA</span><span class="chip">Scikit-learn</span><span class="chip">Regression</span><span class="chip">Visualization</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/King-County-Housing-Sales" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="saudi-business" data-animate="left" class="delay-5">
+<div class="thumb"><img src="Image/5.png" alt="Saudi Business"></div>
+<div class="card-body">
+<h3 data-i18n="p5_title">Business Activities in Saudi Arabia – Dashboard</h3>
+<p class="desc" data-i18n="p5_desc">Business Activities in Saudi Arabia – Dashboard
+A Power BI dashboard project that provides an overview of business activities across different cities/regions of Saudi Arabia. It highlights KPIs, categories, and distributions using interactive visuals to support quick insights and reporting.
+Tools & Technologies:
+Power BI, Data Modeling, KPI Design, Interactive Visuals
+Key Features:
+- KPI cards for quick performance overview
+- Regional breakdown and comparisons
+- Clear charts for distributions and trends
+- Business-focused layout for decision makers</p>
+<div class="chips">
+<span class="chip">Power BI</span><span class="chip">KPIs</span><span class="chip">Insights</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/Business-activities-in-various-cities-of-the-Kingdom-of-Saudi-Arabia-Dashbored" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="ecommerce" data-animate="right" class="delay-1">
+<div class="thumb"><img src="Image/6.png" alt="E-Commerce"></div>
+<div class="card-body">
+<h3 data-i18n="p6_title">E-Commerce Customer Behavior Dashboard</h3>
+<p class="desc" data-i18n="p6_desc">E-Commerce Customer Behavior Dashboard
+A Power BI + Excel dashboard project that analyzes customer behavior in e-commerce. It explores purchasing patterns, satisfaction indicators, and the influence of ads and social media on buying decisions. The dashboard is designed to highlight clear insights using KPI cards and clean visuals.
+Tools & Technologies:
+Microsoft Excel, Power BI, Data Cleaning, KPI Design, Interactive Visuals
+Key Features:
+- Customer purchasing behavior insights
+- Satisfaction indicators and segmentation
+- Impact analysis for ads and social media
+- Business-friendly visuals for reporting</p>
+<div class="chips">
+<span class="chip">Excel</span><span class="chip">Power BI</span><span class="chip">KPIs</span><span class="chip">Customer Insights</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/E-Commerce-Customer-Behavior-Dashboard-" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="uber" data-animate="left" class="delay-2">
+<div class="thumb"><img src="Image/7.png" alt="Uber"></div>
+<div class="card-body">
+<h3 data-i18n="p7_title">Uber Data Analysis Dashboard – Power BI</h3>
+<p class="desc" data-i18n="p7_desc">Uber Data Analysis Dashboard – Power BI
+A complete analysis dashboard that provides insights into Uber booking performance and customer behavior. The project includes data cleaning and processing, KPI reporting, and visuals that summarize booking statuses, payment types, and monthly trends.
+Tools & Technologies:
+Power BI, Microsoft Excel, Data Cleaning, KPI Design, Data Processing
+Key Features:
+- Booking status breakdown (completed, cancelled, etc.)
+- Payment method analysis and performance insights
+- Monthly and trend-based reporting
+- Clear business-friendly dashboard layout</p>
+<div class="chips">
+<span class="chip">Power BI</span><span class="chip">Excel</span><span class="chip">KPIs</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/Uber-Data-Analysis-Power-BI" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+<article class="card" id="revenue" data-animate="right" class="delay-3">
+<div class="thumb"><img src="Image/8.png" alt="Revenue Tracking"></div>
+<div class="card-body">
+<h3 data-i18n="p8_title">Revenue Tracking Dashboard by Product and Region</h3>
+<p class="desc" data-i18n="p8_desc">Revenue Tracking Dashboard by Product and Region
+A Power BI dashboard focused on tracking revenue performance across products and regions. It includes a comprehensive overview of revenue distribution, product performance insights, regional comparisons, and trend analysis. The dashboard is designed for reporting and decision making with clear KPIs and visuals.
+Tools & Technologies:
+Power BI, Data Cleaning, Data Processing, KPI Cards, Visual Analytics
+Key Features:
+- Revenue distribution across product categories
+- Regional performance comparison and breakdown
+- Trend analysis over time
+- Top-performing products and regions summary</p>
+<div class="chips">
+<span class="chip">Power BI</span><span class="chip">KPIs</span><span class="chip">Analytics</span>
+</div>
+<div class="card-actions">
+<a class="iconbtn" href="https://github.com/MawdaALguraafi/Revenue-Tracking-Dashboard-by-Product-and-Region" target="_blank" rel="noopener" aria-label="GitHub">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1.1 1.5 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.2-4.6-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.7-.3 2.5-.3.9 0 1.7.1 2.5.3 1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.7 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 3.9-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z" fill="currentColor"/></svg>
+</a>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer data-animate="up" class="delay-2">
+  <div class="container">
+
+    <div class="footer-inner">
+
+      <!-- NAME -->
+      <div class="foot delay-2" data-animate="left">
+        <h4>Mawda Alguraafi</h4>
+        <p data-i18n="footer_tagline">
+          Data & AI | Analytics | Dashboard Development
+        </p>
+      </div>
+
+      <!-- QUICK LINKS -->
+      <div class="foot delay-3" data-animate="up">
+        <h4 data-i18n="footer_quick">Quick Links</h4>
+        <ul>
+          <li><a href="index.html#home" data-i18n="nav_home">Home</a></li>
+          <li><a href="index.html#about" data-i18n="nav_about">About</a></li>
+          <li><a href="index.html#skills" data-i18n="nav_skills">Skills</a></li>
+          <li><a href="projects.html" data-i18n="nav_projects">Projects</a></li>
+        </ul>
+      </div>
+
+
+
+
+      <!-- CONNECT -->
+      <div class="foot delay-3" data-animate="up">
+        <h4 data-i18n="footer_connect">Connect</h4>
+
+        <div class="social">
+
+          <!-- Email -->
+          <a class="iconbtn"
+             href="mailto:MawdaALguraafi@gmail.com"
+             title="Email"
+             aria-label="Email">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </a>
+
+          <!-- LinkedIn -->
+          <a class="iconbtn"
+             href="https://linkedin.com/in/mawda-alguraafi-836073243"
+             target="_blank"
+             rel="noopener"
+             title="LinkedIn"
+             aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 9v11M6 5.5a1.5 1.5 0 1 0 0 3
+                   1.5 1.5 0 0 0 0-3z
+                   M10 9v11
+                   m0-6c0-2 1.5-4 4-4s4 2 4 5v6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <!-- GitHub -->
+          <a class="iconbtn"
+             href="https://github.com/MawdaALguraafi"
+             target="_blank"
+             rel="noopener"
+             title="GitHub"
+             aria-label="GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7
+                .5.1.7-.2.7-.5v-1.7
+                c-2.8.6-3.4-1.4-3.4-1.4
+                -.4-1.2-1.1-1.5-1.1-1.5
+                -.9-.6.1-.6.1-.6
+                1 .1 1.5 1.1 1.5 1.1
+                .9 1.6 2.4 1.1 3 .9
+                .1-.7.4-1.1.6-1.4
+                -2.2-.3-4.6-1.2-4.6-5.1
+                0-1.1.4-2 1-2.7
+                -.1-.3-.4-1.3.1-2.7
+                0 0 .8-.3 2.7 1
+                .8-.2 1.7-.3 2.5-.3
+                .9 0 1.7.1 2.5.3
+                1.9-1.3 2.7-1 2.7-1
+                .5 1.4.2 2.4.1 2.7
+                .6.7 1 1.6 1 2.7
+                0 3.9-2.4 4.8-4.7 5.1
+                .4.3.7.9.7 1.9v2.8
+                c0 .3.2.6.7.5
+                3.9-1.3 6.8-5.2 6.8-9.7
+                C22 6.6 17.5 2 12 2z"
+                fill="currentColor"/>
+            </svg>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+</footer>
+
+    <!-- BOTTOM -->
+    <div class="footer-bottom">
+      <span data-i18n="footer_copy">© 2025 Mawda Alguraafi</span>
+    </div>
+    </div>
+
+
+<div id="chatbot-root">
+  <button id="chatToggle" class="chat-toggle" type="button">💬</button>
+
+  <div id="chatWindow" class="chat-window hidden">
+    <div class="chat-header">
+      <strong id="chatTitle">Portfolio Assistant</strong>
+      <button id="chatClose" type="button">×</button>
+    </div>
+
+    <div id="chatMessages" class="chat-messages">
+      <div class="bot-msg" id="chatWelcome">
+        Hi! Ask me about Mawda's experience, skills, or projects.
+      </div>
+    </div>
+
+    <form id="chatForm" class="chat-form">
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="Ask about projects, skills, or experience..."
+      />
+      <button id="chatSendBtn" type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+    <form id="chatForm" class="chat-form">
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="Ask about projects, skills, or experience..."
+      />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const I18N = {
+en: {
+page_title: "Projects | Mawda Alguraafi",
+nav_home: "Home",
+nav_about: "About",
+nav_connect: "Connect",
+nav_skills: "Skills",
+nav_projects: "Projects",
+hero_title: "Featured Projects",
+chat_title: "Portfolio Assistant",
+chat_welcome: "Hi! Ask me about Mawda's experience, skills, or projects.",
+chat_placeholder: "Ask about projects, skills, or experience...",
+chat_send: "Send",
+chat_loading: "Typing...",
+hero_desc: "A selection of projects across AI, data analysis, and interactive dashboards.",
+sec_title: "Projects",
+sec_subhead: "Explore the full details of each project below.",
+btn_view: "View My Project",
+footer_tagline: "Data & AI | Analytics | Dashboard Development",
+footer_quick: "Quick Links",
+footer_connect: "Connect",
+footer_copy: "© 2026 Mawda Alguraafi",
+p1_title: "Nabāhah (نباهة) – Intelligent Laboratory Safety Monitoring System",
+p1_desc:
+`Nabāhah (نباهة) is an AI-powered laboratory safety monitoring system designed to enhance safety compliance and reduce risks in laboratory environments. It uses computer vision to detect PPE compliance (lab coat, gloves, mask, goggles), red-zone violations, and hazards such as spills, smoke, and fire, and then generates alerts and analytics through a dashboard.
+Technologies Used:
+Python, FastAPI, YOLOv8 , Supabase
+Key Features:
+- Real-time PPE detection and safety violations monitoring
+- Hazard detection (spill / smoke / fire) with alert logic
+- Dashboard analytics with KPIs, charts, and database viewer
+- Model toggles management (enable/disable models) and logging of detections and alerts
+- Bilingual voice alerts (Arabic/English) using Edge-TTS
+- RAG-based chatbot for laboratory safety queries`,
+p2_title: "InterviewSense – AI Interview Evaluation System",
+p2_desc:
+`InterviewSense is an AI-powered system that evaluates job applicants by analyzing text, and facial expressions. It combines speech-to-text conversion, text similarity analysis, and facial emotion recognition (FER) to provide objective assessments.
+Technologies Used:
+Python, Flask, JavaScript, AssemblyAI, DeepFace, FER Library
+Datasets:
+LibriSpeech, FER2013, Customized FER, Modified ARTJI
+Key Features:
+- Automatic speech recognition (ASR)
+- Question & answer generation using ChatGPT
+- Text similarity analysis with cosine & Jaccard metrics
+- Facial emotion recognition for candidate evaluation`,
+p3_title: "Adidas Sales Dashboard – EDA & Interactive Visualization",
+p3_desc: `
+Adidas Sales Dashboard is a data analytics system designed to analyze Adidas sales performance through exploratory data analysis and interactive visualizations. It integrates data cleaning, statistical analysis, and dashboarding to deliver clear and actionable business insights.
+Technologies Used:
+Python, Pandas, Matplotlib, Streamlit, Plotly
+Datasets:
+Adidas Sales Dataset (Kaggle)
+Key Features:
+- Data cleaning and preprocessing of sales records
+- Exploratory data analysis (EDA) of sales trends and performance
+- Interactive dashboard for real-time data exploration
+- KPI tracking for total sales, profit, units sold, and top-performing products
+- Visual analysis of regional performance and sales methods`,
+p4_title: "King County – Housing Sales Dashboard & Price Prediction",
+p4_desc:
+`King County – Housing Sales Dashboard & Price Prediction
+A complete analytics project for housing sales data. It includes data cleaning, exploratory analysis, feature engineering, and building machine learning models to predict house prices. The project focuses on generating clear insights and supporting decision-making using visualizations and evaluation metrics.
+Technologies Used:
+Python, Pandas, NumPy, Matplotlib, Scikit-learn
+Key Steps:
+- Data cleaning and handling missing values
+- Feature engineering and correlation analysis
+- Model training and evaluation (regression)
+- Visualizations for trends and important factors impacting price`,
+p5_title: "Business Activities in Saudi Arabia – Dashboard",
+p5_desc:
+`Business Activities in Saudi Arabia – Dashboard
+A Power BI dashboard project that provides an overview of business activities across different cities/regions of Saudi Arabia. It highlights KPIs, categories, and distributions using interactive visuals to support quick insights and reporting.
+Tools & Technologies:
+Power BI, Data Modeling, KPI Design, Interactive Visuals
+Key Features:
+- KPI cards for quick performance overview
+- Regional breakdown and comparisons
+- Clear charts for distributions and trends
+- Business-focused layout for decision makers`,
+p6_title: "E-Commerce Customer Behavior Dashboard",
+p6_desc:
+`E-Commerce Customer Behavior Dashboard
+A Power BI + Excel dashboard project that analyzes customer behavior in e-commerce. It explores purchasing patterns, satisfaction indicators, and the influence of ads and social media on buying decisions. The dashboard is designed to highlight clear insights using KPI cards and clean visuals.
+Tools & Technologies:
+Microsoft Excel, Power BI, Data Cleaning, KPI Design, Interactive Visuals
+Key Features:
+- Customer purchasing behavior insights
+- Satisfaction indicators and segmentation
+- Impact analysis for ads and social media
+- Business-friendly visuals for reporting`,
+p7_title: "Uber Data Analysis Dashboard – Power BI",
+p7_desc:
+`Uber Data Analysis Dashboard – Power BI
+A complete analysis dashboard that provides insights into Uber booking performance and customer behavior. The project includes data cleaning and processing, KPI reporting, and visuals that summarize booking statuses, payment types, and monthly trends.
+Tools & Technologies:
+Power BI, Microsoft Excel,KPI Design
+Key Features:
+- Booking status breakdown (completed, cancelled, etc.)
+- Payment method analysis and performance insights
+- Monthly and trend-based reporting
+- Clear business-friendly dashboard layout`,
+p8_title: "Revenue Tracking Dashboard by Product and Region",
+p8_desc:
+`Revenue Tracking Dashboard by Product and Region
+A Power BI dashboard focused on tracking revenue performance across products and regions. It includes a comprehensive overview of revenue distribution, product performance insights, regional comparisons, and trend analysis. The dashboard is designed for reporting and decision making with clear KPIs and visuals.
+Tools & Technologies:
+Power BI, KPI Cards, Visual Analytics
+Key Features:
+- Revenue distribution across product categories
+- Regional performance comparison and breakdown
+- Trend analysis over time
+- Top-performing products and regions summary`
+},
+ar: {
+page_title: "المشاريع | مودة القرافي",
+nav_home: "الرئيسية",
+nav_about: "نبذة عني",
+nav_connect: "تواصل",
+nav_skills: "المهارات",
+nav_projects: "مشاريعي",
+hero_title: "المشاريع المميزة",
+hero_desc: "مجموعة من المشاريع في الذكاء الاصطناعي، تحليل البيانات، ولوحات المعلومات.",
+sec_title: "المشاريع",
+sec_subhead: "تفاصيل كل مشروع موضّحة بالكامل أدناه.",
+btn_view: "عرض مشروعي",
+chat_title: "مساعد البورتفوليو",
+chat_welcome: "أهلًا! اسألني عن خبرات مودة أو مهاراتها أو مشاريعها.",
+chat_placeholder: "اسأل عن المشاريع أو المهارات أو الخبرات...",
+chat_send: "إرسال",
+chat_loading: "جاري الرد...",
+footer_tagline: "البيانات والذكاء الاصطناعي | التحليلات | تطوير لوحات المعلومات",
+footer_quick: "روابط سريعة",
+footer_connect: "تواصل",
+footer_copy: "© 2026 مودة القرافي",
+p1_title: "نباهة (Nabāhah) – نظام مراقبة سلامة المختبر بالذكاء الاصطناعي",
+p1_desc:
+`نباهة (Nabāhah) نظام ذكي لمراقبة سلامة المختبرات يهدف لرفع الالتزام بإجراءات السلامة وتقليل المخاطر داخل بيئة المختبر. يعتمد على الرؤية الحاسوبية لاكتشاف الالتزام بمعدات الوقاية (المعطف، القفازات، الكمامة، النظارات)، ورصد تجاوزات المناطق الحمراء، وكذلك اكتشاف المخاطر مثل الانسكابات والدخان والحريق، ثم إنشاء تنبيهات وتحليلات من خلال لوحة معلومات.
+التقنيات المستخدمة:
+Python, FastAPI, YOLOv8 , Supabase
+أهم المميزات:
+- رصد لحظي للالتزام بمعدات الوقاية ومخالفات السلامة
+- اكتشاف المخاطر (انسكاب / دخان / حريق) مع منطق تنبيهات
+- تحليلات لوحة معلومات تشمل KPIs ورسوم بيانية وعرض قاعدة البيانات
+- Edge-TTS تنبيهات صوتية ثنائية اللغة (العربية / الإنجليزية) باستخدام
+- روبوت محادثة للإجابة على استفسارات السلامة في المختبر`,
+p2_title: "InterviewSense – نظام تقييم مقابلات التوظيف بالذكاء الاصطناعي",
+p2_desc:
+`InterviewSense نظام يعتمد على الذكاء الاصطناعي لتقييم المتقدمين للوظائف عبر تحليل الصوت والنص وتعابير الوجه. يجمع بين تحويل الصوت إلى نص، وتحليل تشابه النصوص، والتعرف على المشاعر (FER) لتقديم تقييمات أكثر موضوعية.
+التقنيات المستخدمة:
+Python, Flask, JavaScript, AssemblyAI, DeepFace, FER Library
+البيانات المستخدمة:
+LibriSpeech, FER2013, Customized FER, Modified ARTJI
+أهم المميزات:
+- التعرف الآلي على الكلام (ASR)
+- توليد أسئلة وأجوبة باستخدام ChatGPT
+- تحليل تشابه النصوص باستخدام Cosine وJaccard
+- التعرف على مشاعر الوجه لتقييم المتقدم`,
+p3_title: "لوحة مبيعات أديداس – التحليل الاستكشافي للبيانات والتصور التفاعلي",
+p3_desc: `
+لوحة مبيعات أديداس هي نظام تحليل بيانات يهدف إلى تحليل أداء مبيعات أديداس من خلال التحليل الاستكشافي للبيانات (EDA) والتصورات التفاعلية. يجمع النظام بين تنظيف البيانات، التحليل الإحصائي، وبناء لوحات المعلومات لتقديم رؤى واضحة وقابلة للتنفيذ تدعم اتخاذ القرار.
+التقنيات المستخدمة:
+Python، Pandas، Matplotlib، Streamlit، Plotly
+مصادر البيانات:
+مجموعة بيانات مبيعات أديداس (Kaggle)
+الميزات الرئيسية:
+- تنظيف ومعالجة بيانات المبيعات وتحضيرها للتحليل
+- إجراء التحليل الاستكشافي للبيانات (EDA) لاكتشاف اتجاهات وأداء المبيعات
+- لوحة تحكم تفاعلية لاستكشاف البيانات بشكل لحظي
+- تتبع مؤشرات الأداء الرئيسية (KPI) مثل إجمالي المبيعات، الأرباح، الوحدات المباعة، وأفضل المنتجات
+- تحليل بصري للأداء حسب المناطق وقنوات البيع`,
+p4_title: "King County – تحليل مبيعات المنازل وتوقع الأسعار",
+p4_desc:
+`King County – Housing Sales Dashboard & Price Prediction
+مشروع تحليلي متكامل لبيانات مبيعات المنازل يشمل تنظيف البيانات والاستكشاف والتحليل وهندسة الخصائص وبناء نماذج تعلم آلي لتوقع أسعار المنازل. يركز المشروع على استخراج رؤى واضحة لدعم اتخاذ القرار عبر التصورات والمؤشرات.
+التقنيات المستخدمة:
+Python, Pandas, NumPy, Matplotlib, Scikit-learn
+الخطوات الأساسية:
+- تنظيف البيانات والتعامل مع القيم المفقودة
+- هندسة خصائص وتحليل الارتباط
+- تدريب النماذج وتقييمها (Regression)
+- تصورات للاتجاهات والعوامل الأكثر تأثيرًا على السعر`,
+p5_title: "لوحة أنشطة الأعمال في السعودية – Dashboard",
+p5_desc:
+`Business Activities in Saudi Arabia – Dashboard
+مشروع لوحة معلومات بـ Power BI يقدم نظرة عامة على أنشطة الأعمال في مدن/مناطق مختلفة داخل المملكة. يبرز مؤشرات الأداء والتصنيفات والتوزيعات عبر رسوم تفاعلية لدعم التقارير واستخلاص الرؤى بسرعة.
+الأدوات والتقنيات:
+Power BI, KPI Design, Interactive Visuals
+أهم المميزات:
+- بطاقات KPI لعرض نظرة عامة سريعة
+- تفصيل ومقارنة بين المناطق
+- رسوم واضحة للتوزيعات والاتجاهات
+- تصميم مناسب لصنّاع القرار`,
+p6_title: "لوحة سلوك العملاء في التجارة الإلكترونية",
+p6_desc:
+`E-Commerce Customer Behavior Dashboard
+مشروع لوحة معلومات باستخدام Power BI وExcel لتحليل سلوك العملاء في التجارة الإلكترونية. يستكشف أنماط الشراء ومؤشرات الرضا وتأثير الإعلانات ووسائل التواصل الاجتماعي على قرار الشراء. تم تصميم اللوحة لإبراز الرؤى بشكل واضح من خلال بطاقات KPI ورسوم منظمة.
+الأدوات والتقنيات:
+Microsoft Excel, Power BI, Data Cleaning, KPI Design, Interactive Visuals
+أهم المميزات:
+- تحليل سلوك الشراء والأنماط
+- مؤشرات الرضا وتقسيم العملاء
+- تحليل تأثير الإعلانات ووسائل التواصل
+- رسوم مناسبة للتقارير وعرض النتائج`,
+p7_title: "Uber – لوحة تحليل البيانات بـ Power BI",
+p7_desc:
+`Uber Data Analysis Dashboard – Power BI
+لوحة تحليل متكاملة تقدم رؤى حول أداء حجوزات Uber وسلوك العملاء. يشمل المشروع تنظيف البيانات ومعالجتها وعرض KPIs ورسوم تلخص حالات الحجز وطرق الدفع والاتجاهات الشهرية.
+الأدوات والتقنيات:
+Power BI, Microsoft Excel, Data Cleaning, KPI Design
+أهم المميزات:
+- تفصيل حالات الحجز (مكتمل، ملغي… إلخ)
+- تحليل طرق الدفع ورؤى الأداء
+- تقارير شهرية واتجاهات زمنية
+- تصميم واضح ومناسب للأعمال`,
+p8_title: "لوحة تتبع الإيرادات حسب المنتج والمنطقة",
+p8_desc:
+`Revenue Tracking Dashboard by Product and Region
+لوحة Power BI مركزة على تتبع الإيرادات عبر المنتجات والمناطق. تتضمن نظرة شاملة لتوزيع الإيرادات ورؤى أداء المنتجات ومقارنات المناطق وتحليل الاتجاهات عبر الزمن. تم تصميم اللوحة للتقارير ودعم اتخاذ القرار عبر KPIs ورسوم واضحة.
+الأدوات والتقنيات:
+Power BI, KPI Cards, Visual Analytics
+أهم المميزات:
+- توزيع الإيرادات حسب فئات المنتجات
+- مقارنة أداء المناطق وتفصيلها
+- تحليل الاتجاهات عبر الزمن
+- تلخيص أعلى المنتجات والمناطق أداءً`
+}
+};
+function applyTranslations(lang){
+document.querySelectorAll("[data-i18n]").forEach(el=>{
+const key = el.getAttribute("data-i18n");
+const val = (I18N[lang] && I18N[lang][key]) || (I18N.en[key] || "");
+el.textContent = val;
+});
+document.title = (I18N[lang] && I18N[lang].page_title) ? I18N[lang].page_title : document.title;
+}
+function updateChatLanguage(lang){
+  const title = document.getElementById("chatTitle");
+  const welcome = document.getElementById("chatWelcome");
+  const input = document.getElementById("chatInput");
+  const sendBtn = document.getElementById("chatSendBtn");
+
+  if (title) title.textContent = I18N[lang].chat_title;
+  if (welcome) welcome.textContent = I18N[lang].chat_welcome;
+  if (input) input.placeholder = I18N[lang].chat_placeholder;
+  if (sendBtn) sendBtn.textContent = I18N[lang].chat_send;
+}
+function setLang(lang){
+  const html = document.documentElement;
+  html.dataset.lang = lang;
+  html.lang = (lang === "ar") ? "ar" : "en";
+  html.dir  = (lang === "ar") ? "rtl" : "ltr";
+
+  const langBtn = document.getElementById("langToggle");
+  if (langBtn){
+    langBtn.dataset.lang = lang;
+    langBtn.title = (lang === "ar") ? "English" : "Arabic";
+  }
+
+  applyTranslations(lang);
+  updateChatLanguage(lang);
+  localStorage.setItem("site_lang", lang);
+}
+function renderThemeIcon(theme){
+const icon = document.getElementById("themeIcon");
+if(!icon) return;
+if(theme === "light"){
+icon.innerHTML = `
+<path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z" stroke="currentColor" stroke-width="2"/>
+<path d="M12 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M12 20v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M4.93 4.93l1.41 1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M17.66 17.66l1.41 1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M2 12h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M20 12h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M4.93 19.07l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+<path d="M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+`;
+}else{
+icon.innerHTML = `
+<path d="M21 14.5A8.5 8.5 0 0 1 9.5 3
+a7 7 0 1 0 11.5 11.5Z"
+stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+`;
+}
+}
+function setTheme(theme){
+document.documentElement.setAttribute("data-theme", theme);
+localStorage.setItem("site_theme", theme);
+renderThemeIcon(theme);
+}
+const savedTheme = localStorage.getItem("site_theme") || "dark";
+setTheme(savedTheme);
+document.getElementById("themeToggle").addEventListener("click", () => {
+const current = document.documentElement.getAttribute("data-theme") || "dark";
+setTheme(current === "dark" ? "light" : "dark");
+});
+const saved = localStorage.getItem("site_lang") || "en";
+setLang(saved);
+document.getElementById("langToggle").addEventListener("click", () => {
+const current = document.documentElement.dataset.lang || "en";
+setLang(current === "en" ? "ar" : "en");
+});
+  document.querySelectorAll('a[href="#connect"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const chatToggle = document.getElementById("chatToggle");
+  const chatWindow = document.getElementById("chatWindow");
+  const chatClose = document.getElementById("chatClose");
+  const chatForm = document.getElementById("chatForm");
+  const chatInput = document.getElementById("chatInput");
+  const chatMessages = document.getElementById("chatMessages");
+  const chatSendBtn = chatForm?.querySelector("button[type='submit']");
+
+  let isSending = false;
+  const API_URL = "https://portfolio2-4xs8.onrender.com";
+
+  function openChat() {
+    chatWindow?.classList.remove("hidden");
+  }
+
+  function closeChat() {
+    chatWindow?.classList.add("hidden");
+  }
+
+  function toggleChat() {
+    chatWindow?.classList.toggle("hidden");
+  }
+
+  chatToggle?.addEventListener("click", toggleChat);
+  chatClose?.addEventListener("click", closeChat);
+
+  function isArabicText(text) {
+    return /[\u0600-\u06FF]/.test(text);
+  }
+
+  function formatArabicMixedText(text) {
+    const terms = [
+      "Power BI", "Tableau", "Streamlit", "FastAPI", "Scikit-learn",
+      "Python", "SQL Server", "SQL", "Java", "HTML", "CSS",
+      "Excel", "Word", "Figma", "Canva", "YOLOv8", "Supabase", "WebI", "IDT"
+    ];
+
+    let formatted = String(text || "").replace(/\s+/g, " ").trim();
+    formatted = formatted.replace(/و(?=[A-Za-z])/g, "و ");
+
+    terms.sort((a, b) => b.length - a.length);
+
+    for (const term of terms) {
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      formatted = formatted.replace(
+        new RegExp(escaped, "g"),
+        `<span class="ltr">${term}</span>`
+      );
+    }
+
+    return formatted;
+  }
+
+  function addMessage(text, type = "bot") {
+    if (!chatMessages) return null;
+
+    const div = document.createElement("div");
+    const langClass = isArabicText(text) ? "ar" : "en";
+    div.className = `${type === "user" ? "user-msg" : "bot-msg chat-message"} ${langClass}`;
+
+    if (type === "user") {
+      div.textContent = text;
+    } else {
+      div.innerHTML = formatArabicMixedText(text);
+    }
+
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return div;
+  }
+
+  function setSendingState(state) {
+    isSending = state;
+
+    if (chatSendBtn) {
+      chatSendBtn.disabled = state;
+      chatSendBtn.style.opacity = state ? "0.7" : "1";
+      chatSendBtn.style.cursor = state ? "not-allowed" : "pointer";
+    }
+
+    if (chatInput) {
+      chatInput.disabled = state;
+    }
+  }
+
+  async function sendChatMessage() {
+    if (!chatInput || !chatMessages || isSending) return;
+
+    const question = chatInput.value.trim();
+    if (!question) return;
+
+    const isArabic = isArabicText(question);
+
+    addMessage(question, "user");
+    chatInput.value = "";
+    setSendingState(true);
+
+    const loadingMsg = addMessage(isArabic ? "جاري الرد..." : "Typing...", "bot");
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question })
+      });
+
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
+
+      loadingMsg?.remove();
+
+      if (!res.ok) {
+        addMessage(
+          data.answer ||
+          data.message ||
+          (isArabic ? "حدث خطأ أثناء معالجة الطلب." : "An error occurred while processing the request."),
+          "bot"
+        );
+        return;
+      }
+
+      addMessage(
+        data.answer || data.message || (isArabic ? "لم يتم استلام رد." : "No response was received."),
+        "bot"
+      );
+    } catch (error) {
+      console.error("Chat error:", error);
+      loadingMsg?.remove();
+
+      addMessage(
+        isArabic
+          ? "تعذر الاتصال حاليًا. حاولي مرة أخرى بعد قليل."
+          : "Unable to connect right now. Please try again shortly.",
+        "bot"
+      );
+    } finally {
+      setSendingState(false);
+      chatInput?.focus();
+    }
+  }
+
+  chatForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await sendChatMessage();
+  });
+});
+
+
+
+
+</script>
+
+</body>
+</html>
