@@ -41,22 +41,21 @@ class ChatRequest(BaseModel):
 
 
 def is_arabic(text: str) -> bool:
-    """Detect if the input contains Arabic characters."""
     return bool(re.search(r"[\u0600-\u06FF]", str(text or "")))
-
-
-def fix_mixed_text(text: str) -> str:
-    """Small cleanup for mixed Arabic/English spacing."""
-    text = str(text or "")
-    text = re.sub(r"و([A-Za-z])", r"و \1", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
 
 
 def normalize_text(text: str) -> str:
     text = str(text or "").lower().strip()
     text = re.sub(r"[^\w\u0600-\u06FF\s\-]", " ", text)
     text = re.sub(r"\s+", " ", text)
+    return text
+
+
+def fix_mixed_text(text: str) -> str:
+    text = str(text or "")
+    text = re.sub(r"\s+", " ", text).strip()
+    text = text.replace(" ,", ",").replace(" .", ".")
+    text = re.sub(r"\s+و\s+", " و", text)
     return text
 
 
@@ -90,7 +89,6 @@ def retrieve_chunks(question: str, top_k: int = 3):
 
 
 def build_context(matches, lang: str = "en") -> str:
-    """Build context in the same language style as the user's question."""
     if lang == "ar":
         return "\n\n".join(
             f"العنوان: {item.get('title', '')}\nالمحتوى: {item.get('content', '')}"
@@ -111,6 +109,7 @@ def clean_arabic_response(text: str) -> str:
         r"(?i)^based on the context.*",
         r"(?i)^this information is not mentioned.*",
         r"(?i)^according to the context.*",
+        r"(?i)^i cannot find.*",
     ]
 
     for pattern in english_fallback_patterns:
@@ -122,8 +121,10 @@ def clean_arabic_response(text: str) -> str:
         "Mawda works with": "تعمل مودة باستخدام",
         "Mawda has skills in": "تمتلك مودة مهارات في",
         "Mawda's portfolio includes": "يتضمن بورتفوليو مودة",
-        "based on the context": "",
+        "According to the context,": "",
+        "Based on the context,": "",
         "according to the context": "",
+        "based on the context": "",
     }
 
     for src, target in replacements.items():
@@ -132,9 +133,9 @@ def clean_arabic_response(text: str) -> str:
     text = fix_mixed_text(text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    # If the reply is still mostly English, return a safe Arabic fallback
     arabic_chars = len(re.findall(r"[\u0600-\u06FF]", text))
     english_words = len(re.findall(r"[A-Za-z]{3,}", text))
+
     if arabic_chars < 3 and english_words > 4:
         return "هذه المعلومة غير مذكورة في البورتفوليو."
 
@@ -147,11 +148,132 @@ def clean_english_response(text: str) -> str:
     if "هذه المعلومة غير مذكورة في البورتفوليو" in text:
         return "This information is not mentioned in the portfolio."
 
-    # Remove Arabic if any leaked into the English answer
     text = re.sub(r"[\u0600-\u06FF]+", "", text)
     text = re.sub(r"\s+", " ", text).strip()
 
     return text
+
+
+def get_custom_answer(question: str, lang: str):
+    q = normalize_text(question)
+
+    if lang == "ar":
+        if (
+            "عرف" in q
+            or "عرفيني" in q
+            or "عن نفسك" in q
+            or "نبذه" in q
+            or "نبذة" in q
+            or "من هي موده" in q
+            or "من هي مودة" in q
+        ):
+            return (
+                "مودة القرافي متخصصة في تحليل البيانات والذكاء الاصطناعي، وتمتلك خبرة عملية في بناء "
+                "لوحات المعلومات والتقارير التحليلية وتطوير حلول تقنية تدعم اتخاذ القرار. "
+                "تتميز بقدرتها على تحويل البيانات إلى رؤى واضحة ومشاريع عملية باستخدام أدوات مثل "
+                "Python وSQL وPower BI وTableau وFastAPI."
+            )
+
+        if (
+            "مهارات" in q
+            or "وش تعرف" in q
+            or "قدرات" in q
+            or "تقنيات" in q
+            or "ادوات" in q
+            or "أدوات" in q
+            or "skills" in q
+        ):
+            return (
+                "تمتلك مودة مهارات قوية في Python وSQL وExcel وPower BI وTableau وFastAPI وStreamlit، "
+                "إلى جانب تنظيف البيانات وتحليلها استكشافيًا وتدريب النماذج وتقييمها. "
+                "كما تتميز بقدرتها على بناء لوحات معلومات وتقارير تحليلية تساعد على فهم الأداء "
+                "وتحويل البيانات إلى نتائج عملية واضحة."
+            )
+
+        if (
+            "خبرات" in q
+            or "الخبرات" in q
+            or "خبره" in q
+            or "خبرة" in q
+            or "experience" in q
+        ):
+            return (
+                "لدى مودة خبرة عملية في تحليل البيانات وبناء لوحات المعلومات والتقارير التحليلية، "
+                "إضافة إلى تطوير مشاريع تقنية مرتبطة بالذكاء الاصطناعي ومعالجة البيانات. "
+                "كما عملت على أدوات وتقنيات تدعم التحليل واتخاذ القرار، مع اهتمام واضح بالتطبيق العملي "
+                "وجودة المخرجات."
+            )
+
+        if (
+            "مشاريع" in q
+            or "مشروع" in q
+            or "اعمالها" in q
+            or "أعمالها" in q
+            or "projects" in q
+        ):
+            return (
+                "يتضمن بورتفوليو مودة مجموعة من المشاريع التي تعكس قدرتها على الدمج بين التحليل والتقنية، "
+                "مثل مشاريع تحليل البيانات، ولوحات المعلومات، والحلول المعتمدة على الذكاء الاصطناعي. "
+                "وتركز مشاريعها على تقديم قيمة عملية واضحة، وليس فقط تنفيذ الفكرة من الجانب التقني."
+            )
+
+        if (
+            "ليش اوظف" in q
+            or "ليش نوظف" in q
+            or "وش يميز" in q
+            or "ما الذي يميز" in q
+            or "لماذا موده" in q
+            or "لماذا مودة" in q
+            or "why hire" in q
+        ):
+            return (
+                "ما يميز مودة هو جمعها بين المهارات التحليلية والتقنية والقدرة على تطبيقها عمليًا في مشاريع "
+                "واقعية. فهي لا تكتفي بفهم البيانات، بل تحولها إلى تقارير ولوحات معلومات وحلول ذكية "
+                "تدعم القرار وتظهر أثرًا واضحًا، وهذا يجعلها مرشحة قوية لأي جهة تبحث عن شخص يجمع بين "
+                "التحليل والدقة والتطبيق العملي."
+            )
+
+    else:
+        if (
+            "tell me about yourself" in q
+            or "introduce yourself" in q
+            or "about mawda" in q
+            or "who is mawda" in q
+        ):
+            return (
+                "Mawda Alguraafi is a data-focused professional with strong interests in data analysis and artificial intelligence. "
+                "She has hands-on experience in building dashboards, analytical reports, and practical technical solutions using "
+                "tools such as Python, SQL, Power BI, Tableau, and FastAPI."
+            )
+
+        if "skills" in q or "technical skills" in q:
+            return (
+                "Mawda has strong skills in Python, SQL, Excel, Power BI, Tableau, FastAPI, and Streamlit, along with experience "
+                "in data cleaning, exploratory data analysis, model training, and evaluation. She is especially strong at turning "
+                "data into clear insights, dashboards, and practical decision-support solutions."
+            )
+
+        if "experience" in q or "background" in q:
+            return (
+                "Mawda has practical experience in data analysis, dashboard development, analytical reporting, and AI-related projects. "
+                "Her work reflects a strong balance between technical execution, analytical thinking, and real-world application."
+            )
+
+        if "projects" in q or "portfolio" in q:
+            return (
+                "Mawda's portfolio includes projects in data analysis, dashboards, and AI-driven solutions that demonstrate both "
+                "technical capability and practical business value. Her projects are focused on delivering clear, usable outcomes "
+                "rather than just technical implementation."
+            )
+
+        if "why hire" in q or "what makes her stand out" in q:
+            return (
+                "What makes Mawda stand out is her ability to combine analytical thinking, technical skills, and practical execution. "
+                "She does not just work with data technically; she turns it into clear reports, dashboards, and useful solutions, "
+                "which makes her a strong candidate for teams looking for real impact."
+            )
+
+    return None
 
 
 async def generate_rag_answer(question: str, context: str, lang: str) -> str:
@@ -159,46 +281,50 @@ async def generate_rag_answer(question: str, context: str, lang: str) -> str:
         system_prompt = """
 أنت مساعد ذكي خاص ببورتفوليو مودة القرافي.
 
-الهدف:
-تقديم إجابات دقيقة، احترافية، وسريعة عن خبرات ومهارات ومشاريع مودة.
+هدفك:
+تقديم إجابات احترافية، جذابة، وواضحة تعكس مودة كمرشحة قوية في مجالات تحليل البيانات، الذكاء الاصطناعي، ولوحات المعلومات، مع إبراز قيمتها المهنية بشكل مقنع ومختصر.
 
 قواعد صارمة:
 - إذا كان سؤال المستخدم بالعربية، يجب أن تكون الإجابة بالعربية فقط.
-- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل: Python, SQL, Power BI, Tableau, FastAPI, Streamlit.
+- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل Python وSQL وPower BI وTableau وFastAPI وStreamlit.
 - لا تبدأ الجواب بأي جملة إنجليزية.
-- لا تنسخ النص الإنجليزي من السياق كما هو.
-- أعد صياغة المعلومات داخل جمل عربية طبيعية وواضحة.
+- لا تنسخ النص من السياق حرفيًا.
+- أعد صياغة المعلومات بأسلوب مهني جذاب وواضح.
 - لا تضف أي معلومات غير موجودة في السياق.
 - إذا لم توجد الإجابة في السياق، قل فقط:
 هذه المعلومة غير مذكورة في البورتفوليو.
 
 أسلوب الإجابة:
-- اجعل الإجابة مختصرة جدًا: جملة إلى جملتين كحد أقصى.
-- استخدم أسلوبًا بشريًا طبيعيًا، وليس ترجمة حرفية.
-- ابدأ الإجابة مباشرة دون مقدمات مثل: بالتأكيد، حسب المعلومات، بناءً على السياق.
-- ركّز على المعلومة المهمة فقط.
+- اجعل الإجابة طبيعية ومقنعة ومرتبة.
+- عند الحديث عن مودة، أبرز نقاط القوة المهنية والمهارات والأثر العملي.
+- إذا كان السؤال عن المهارات أو الخبرات أو المشاريع، اجعل الإجابة تبدو قوية ومناسبة لشخص قد يوظفها.
+- لا تجعل الإجابة جافة أو مختصرة جدًا إلا إذا كان السؤال مباشرًا جدًا.
+- اجعل طول الإجابة من جملتين إلى 4 جمل عند الحاجة.
+- استخدم أسلوبًا احترافيًا يبرز قيمة مودة دون مبالغة.
 """
     else:
         system_prompt = """
-You are a portfolio assistant for Mawda Alguraafi.
+You are an intelligent portfolio assistant for Mawda Alguraafi.
 
-Goal:
-Provide accurate, professional, and fast answers about Mawda's experience, skills, and projects.
+Your goal:
+Provide professional, polished, and appealing answers that present Mawda as a strong candidate in data analysis, AI, dashboards, and technical problem-solving.
 
 Strict rules:
-- Answer only in English.
+- If the user asks in English, answer only in English.
 - Do not use Arabic at all.
 - Do not mix languages.
+- Do not copy the context word for word.
+- Rewrite the information in a polished, professional, and human way.
 - Do not add any information not found in the context.
 - If the answer is not found, say exactly:
 This information is not mentioned in the portfolio.
 
 Style:
-- Keep answers short: 1-2 sentences maximum.
-- Sound natural and human, not robotic.
-- Start directly with the answer.
-- Do not use fillers such as: Sure, Based on the context, According to the context.
-- Focus only on the key information.
+- Make the answer clear, professional, and appealing.
+- Highlight strengths, practical skills, and impact when relevant.
+- If the user asks about skills, experience, or projects, make the answer sound strong and hiring-friendly.
+- Keep the answer natural, not robotic.
+- Use 2 to 4 sentences when needed.
 """
 
     headers = {
@@ -219,11 +345,11 @@ Style:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        "temperature": 0,
-        "max_tokens": 140,
+        "temperature": 0.3,
+        "max_tokens": 260,
     }
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
+    async with httpx.AsyncClient(timeout=25.0) as client:
         response = await client.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers=headers,
@@ -315,6 +441,10 @@ async def chat(req: ChatRequest):
             "answer": "قاعدة المعرفة غير متوفرة حاليًا." if lang == "ar" else "Knowledge base is currently unavailable."
         }
 
+    custom_answer = get_custom_answer(question, lang)
+    if custom_answer:
+        return {"answer": custom_answer}
+
     matches = retrieve_chunks(question, top_k=3)
 
     if not matches:
@@ -338,8 +468,7 @@ async def chat(req: ChatRequest):
 
     except Exception as e:
         print("Unexpected error:", str(e))
-        return {
-            "answer": "تعذر الوصول إلى المساعد حاليًا."
-            if lang == "ar"
-            else "The assistant is currently unavailable."
-        }
+
+        if lang == "ar":
+            return {"answer": "تعذر الوصول إلى المساعد حاليًا. الرجاء المحاولة مرة أخرى."}
+        return {"answer": "The assistant is currently unavailable. Please try again."}
