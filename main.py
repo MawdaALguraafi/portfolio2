@@ -78,32 +78,17 @@ def fix_mixed_text(text: str) -> str:
 def remove_markdown_format(text: str) -> str:
     text = str(text or "")
 
-    # remove headings like # ## ###
     text = re.sub(r"(?m)^\s*#{1,6}\s*", "", text)
-
-    # remove bold / italic markdown
     text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
     text = re.sub(r"\*(.*?)\*", r"\1", text)
     text = re.sub(r"__(.*?)__", r"\1", text)
     text = re.sub(r"_(.*?)_", r"\1", text)
-
-    # remove markdown bullets at line start
     text = re.sub(r"(?m)^\s*[\*\-]\s+", "", text)
-
-    # remove blockquote markers
     text = re.sub(r"(?m)^\s*>\s*", "", text)
-
-    # remove repeated pipes often used in markdown rows
     text = text.replace("|", " ")
 
     text = fix_mixed_text(text)
     return text.strip()
-
-
-def clean_heading_line(line: str) -> str:
-    line = remove_markdown_format(line)
-    line = re.sub(r"^[\-\–\—\•\.\: ]+", "", line).strip()
-    return line
 
 
 def extract_language_content(content: str, lang: str) -> str:
@@ -157,11 +142,38 @@ def get_custom_answer(question: str, lang: str):
     }
 
     if lang == "ar" and q in {normalize_text(x) for x in arabic_greetings}:
-        return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات."
+        return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات، أو المعدل."
     if lang == "en" and q in {normalize_text(x) for x in english_greetings}:
-        return "Hi! Ask me about Mawda’s projects, experience, education and skills."
+        return "Hi! Ask me about Mawda’s projects, experience, education, skills, or GPA."
 
     return None
+
+
+def get_direct_kb_answer(question: str, lang: str):
+    q = normalize_text(question)
+
+    if q not in {"معدل", "المعدل", "gpa"}:
+        return None
+
+    best_match = None
+
+    for item in KB:
+        title = normalize_text(item.get("title", ""))
+        content = normalize_text(item.get("content", ""))
+        category = normalize_text(item.get("category", ""))
+
+        if (
+            "gpa" in title
+            or "gpa" in content
+            or "4.88" in content
+            or "first class honors" in content
+            or ("education" == category and ("4.88" in content or "gpa" in content))
+        ):
+            best_match = extract_language_content(item.get("content", ""), lang)
+            if best_match:
+                break
+
+    return best_match
 
 
 def expand_query_words(question: str):
@@ -594,25 +606,29 @@ def format_multi_item_response(matches, lang: str):
     items = groups[category]
 
     if category in {"project", "projects"}:
-        if lang == "ar":
-            labels = ["المشروع الأول", "المشروع الثاني", "المشروع الثالث", "المشروع الرابع", "المشروع الخامس", "المشروع السادس", "المشروع السابع", "المشروع الثامن"]
-        else:
-            labels = ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5", "Project 6", "Project 7", "Project 8"]
+        labels = (
+            ["المشروع الأول", "المشروع الثاني", "المشروع الثالث", "المشروع الرابع", "المشروع الخامس", "المشروع السادس", "المشروع السابع", "المشروع الثامن"]
+            if lang == "ar"
+            else ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5", "Project 6", "Project 7", "Project 8"]
+        )
     elif category == "experience":
-        if lang == "ar":
-            labels = ["الخبرة الأولى", "الخبرة الثانية", "الخبرة الثالثة", "الخبرة الرابعة", "الخبرة الخامسة", "الخبرة السادسة"]
-        else:
-            labels = ["Experience 1", "Experience 2", "Experience 3", "Experience 4", "Experience 5", "Experience 6"]
+        labels = (
+            ["الخبرة الأولى", "الخبرة الثانية", "الخبرة الثالثة", "الخبرة الرابعة", "الخبرة الخامسة", "الخبرة السادسة"]
+            if lang == "ar"
+            else ["Experience 1", "Experience 2", "Experience 3", "Experience 4", "Experience 5", "Experience 6"]
+        )
     elif category == "education":
-        if lang == "ar":
-            labels = ["التعليم الأول", "التعليم الثاني", "التعليم الثالث", "التعليم الرابع", "التعليم الخامس"]
-        else:
-            labels = ["Education 1", "Education 2", "Education 3", "Education 4", "Education 5"]
+        labels = (
+            ["التعليم الأول", "التعليم الثاني", "التعليم الثالث", "التعليم الرابع", "التعليم الخامس"]
+            if lang == "ar"
+            else ["Education 1", "Education 2", "Education 3", "Education 4", "Education 5"]
+        )
     elif category == "skills":
-        if lang == "ar":
-            labels = ["المهارة الأولى", "المهارة الثانية", "المهارة الثالثة", "المهارة الرابعة", "المهارة الخامسة", "المهارة السادسة", "المهارة السابعة", "المهارة الثامنة"]
-        else:
-            labels = ["Skill 1", "Skill 2", "Skill 3", "Skill 4", "Skill 5", "Skill 6", "Skill 7", "Skill 8"]
+        labels = (
+            ["المهارة الأولى", "المهارة الثانية", "المهارة الثالثة", "المهارة الرابعة", "المهارة الخامسة", "المهارة السادسة", "المهارة السابعة", "المهارة الثامنة"]
+            if lang == "ar"
+            else ["Skill 1", "Skill 2", "Skill 3", "Skill 4", "Skill 5", "Skill 6", "Skill 7", "Skill 8"]
+        )
     else:
         return None
 
@@ -620,13 +636,8 @@ def format_multi_item_response(matches, lang: str):
     for i, item in enumerate(items):
         title = remove_markdown_format(extract_language_title(item.get("title", ""), lang))
         content = remove_markdown_format(extract_language_content(item.get("content", ""), lang))
-
         label = labels[i] if i < len(labels) else (f"{category.title()} {i+1}" if lang == "en" else f"العنصر {i+1}")
-        if lang == "ar":
-            block = f"{label}:\n{title}\n{content}"
-        else:
-            block = f"{label}:\n{title}\n{content}"
-
+        block = f"{label}:\n{title}\n{content}"
         blocks.append(block.strip())
 
     return "\n\n".join(blocks).strip()
@@ -791,7 +802,6 @@ def merge_answer_with_continuation(answer: str, continuation: str) -> str:
     answer_last = answer.split()[-8:] if answer.split() else []
     cont_words = continuation.split()
 
-    # remove overlapping repeated words
     overlap = 0
     max_overlap = min(len(answer_last), len(cont_words), 8)
     for i in range(max_overlap, 0, -1):
@@ -854,6 +864,17 @@ async def chat(req: ChatRequest):
     if custom_answer:
         return {"answer": custom_answer}
 
+    direct_kb_answer = get_direct_kb_answer(question, lang)
+    if direct_kb_answer:
+        if lang == "ar":
+            direct_kb_answer = clean_arabic_response(direct_kb_answer)
+        else:
+            direct_kb_answer = clean_english_response(direct_kb_answer)
+
+        direct_kb_answer = remove_markdown_format(direct_kb_answer)
+        direct_kb_answer = trim_incomplete_tail(direct_kb_answer)
+        return {"answer": direct_kb_answer}
+
     broad_category = detect_broad_category(question)
     if broad_category:
         matches = retrieve_by_category(broad_category["categories"])
@@ -867,7 +888,6 @@ async def chat(req: ChatRequest):
             else "This information is not mentioned in the portfolio."
         }
 
-    # direct formatting for broad lists like all projects / all experience / all education / all skills
     direct_multi = format_multi_item_response(matches, lang)
     if direct_multi and broad_category:
         direct_multi = remove_markdown_format(direct_multi)
