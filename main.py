@@ -68,10 +68,42 @@ def normalize_text(text: str) -> str:
 
 def fix_mixed_text(text: str) -> str:
     text = str(text or "")
-    text = re.sub(r"\s+", " ", text).strip()
-    text = text.replace(" ,", ",").replace(" .", ".")
-    text = text.replace(" :", ":")
+    text = re.sub(r"\r\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = text.replace(" ,", ",").replace(" .", ".").replace(" :", ":")
+    text = re.sub(r"[ \t]+", " ", text)
     return text.strip()
+
+
+def remove_markdown_format(text: str) -> str:
+    text = str(text or "")
+
+    # remove headings like # ## ###
+    text = re.sub(r"(?m)^\s*#{1,6}\s*", "", text)
+
+    # remove bold / italic markdown
+    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
+    text = re.sub(r"\*(.*?)\*", r"\1", text)
+    text = re.sub(r"__(.*?)__", r"\1", text)
+    text = re.sub(r"_(.*?)_", r"\1", text)
+
+    # remove markdown bullets at line start
+    text = re.sub(r"(?m)^\s*[\*\-]\s+", "", text)
+
+    # remove blockquote markers
+    text = re.sub(r"(?m)^\s*>\s*", "", text)
+
+    # remove repeated pipes often used in markdown rows
+    text = text.replace("|", " ")
+
+    text = fix_mixed_text(text)
+    return text.strip()
+
+
+def clean_heading_line(line: str) -> str:
+    line = remove_markdown_format(line)
+    line = re.sub(r"^[\-\–\—\•\.\: ]+", "", line).strip()
+    return line
 
 
 def extract_language_content(content: str, lang: str) -> str:
@@ -120,14 +152,12 @@ def get_custom_answer(question: str, lang: str):
         "هاي", "هلا", "هلاا", "مرحبا", "اهلا", "أهلا",
         "السلام", "السلام عليكم", "صباح الخير", "مساء الخير"
     }
-
     english_greetings = {
         "hi", "hello", "hey", "good morning", "good evening"
     }
 
     if lang == "ar" and q in {normalize_text(x) for x in arabic_greetings}:
         return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات، أو المعدل."
-
     if lang == "en" and q in {normalize_text(x) for x in english_greetings}:
         return "Hi! Ask me about Mawda’s projects, experience, education, skills, or GPA."
 
@@ -261,9 +291,7 @@ def expand_query_words(question: str):
         ])
 
     if "معدل" in joined_q or "gpa" in joined_q:
-        expanded.update([
-            "gpa", "4.88", "first class honors", "taibah university"
-        ])
+        expanded.update(["gpa", "4.88", "first class honors", "taibah university"])
 
     if "مشاريع" in joined_q or "projects" in joined_q:
         expanded.update(["project", "projects", "portfolio"])
@@ -279,18 +307,15 @@ def detect_broad_category(question: str):
         "project list", "اعرض المشاريع", "اذكر المشاريع",
         "ما هي المشاريع", "وش مشاريعها", "وش المشاريع"
     ]
-
     experience_terms = [
         "كل الخبرات", "الخبرات", "الخبره", "الخبرة",
         "experience", "experiences", "اعرض الخبرات",
         "وش خبراتها", "ما هي الخبرات"
     ]
-
     education_terms = [
         "كل التعليم", "التعليم", "education", "academic background",
         "الدراسه", "الدراسة", "المؤهلات", "المؤهل", "اعرض التعليم"
     ]
-
     skills_terms = [
         "المهارات", "كل المهارات", "المهارات التقنية", "المهارات التقنيه",
         "technical skills", "skills", "وش مهاراتها", "اذكر المهارات"
@@ -298,13 +323,10 @@ def detect_broad_category(question: str):
 
     if any(normalize_text(term) in q for term in project_terms):
         return {"mode": "category", "categories": {"project", "projects"}}
-
     if any(normalize_text(term) in q for term in experience_terms):
         return {"mode": "category", "categories": {"experience"}}
-
     if any(normalize_text(term) in q for term in education_terms):
         return {"mode": "category", "categories": {"education"}}
-
     if any(normalize_text(term) in q for term in skills_terms):
         return {"mode": "category", "categories": {"skills"}}
 
@@ -355,7 +377,6 @@ def retrieve_chunks(question: str, top_k: int = 8):
         for word in q_words:
             if not word:
                 continue
-
             if word == item_id:
                 score += 15
             if word in normalized_title:
@@ -408,7 +429,6 @@ def retrieve_chunks(question: str, top_k: int = 8):
 
     seen_ids = set()
     results = []
-
     for score, item in scored_results:
         item_id = item.get("id", "")
         if item_id in seen_ids:
@@ -432,13 +452,9 @@ def build_context(matches, lang: str = "en") -> str:
         category = item.get("category", "")
 
         if lang == "ar":
-            sections.append(
-                f"الفئة: {category}\nالعنوان: {title}\nالمحتوى: {content}"
-            )
+            sections.append(f"الفئة: {category}\nالعنوان: {title}\nالمحتوى: {content}")
         else:
-            sections.append(
-                f"Category: {category}\nTitle: {title}\nContent: {content}"
-            )
+            sections.append(f"Category: {category}\nTitle: {title}\nContent: {content}")
 
     return "\n\n---\n\n".join(sections)
 
@@ -471,7 +487,6 @@ def clean_arabic_response(text: str) -> str:
         text = text.replace(src, target)
 
     text = fix_mixed_text(text)
-    text = re.sub(r"\s+", " ", text).strip()
 
     arabic_chars = len(re.findall(r"[\u0600-\u06FF]", text))
     english_words = len(re.findall(r"[A-Za-z]{3,}", text))
@@ -479,7 +494,7 @@ def clean_arabic_response(text: str) -> str:
     if arabic_chars < 3 and english_words > 4:
         return "هذه المعلومة غير مذكورة في البورتفوليو."
 
-    return text
+    return text.strip()
 
 
 def clean_english_response(text: str) -> str:
@@ -489,67 +504,135 @@ def clean_english_response(text: str) -> str:
         return "This information is not mentioned in the portfolio."
 
     text = re.sub(r"[\u0600-\u06FF]+", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
+    text = fix_mixed_text(text)
+    return text.strip()
+
+
+def looks_incomplete(text: str) -> bool:
+    text = str(text or "").strip()
+    if not text:
+        return True
+
+    bad_endings = (
+        ":", "،", ",", ";", "؛", "-", "—", "(", "[", "{", "/", "|",
+        "and", "or", "with", "using", "مثل", "مثل:", "يشمل", "تشمل", "منها"
+    )
+
+    lower_text = text.lower()
+
+    if lower_text.endswith(bad_endings):
+        return True
+
+    if text.count("(") > text.count(")"):
+        return True
+    if text.count("[") > text.count("]"):
+        return True
+    if text.count("{") > text.count("}"):
+        return True
+
+    last_line = text.split("\n")[-1].strip()
+    if len(last_line) <= 2:
+        return True
+
+    if re.search(r"(?:\b(?:python|sql|power bi|tableau|fastapi|streamlit|webi|idt|xry|xamn|md-next|md-red)\b)\s*$", lower_text):
+        return True
+
+    return False
+
+
+def trim_incomplete_tail(text: str) -> str:
+    text = str(text or "").strip()
+    if not text:
+        return text
+
+    lines = [line.rstrip() for line in text.split("\n") if line.strip()]
+    if not lines:
+        return ""
+
+    while lines:
+        last = lines[-1].strip()
+        last_norm = last.lower()
+
+        if (
+            last.endswith((":", "،", ",", ";", "؛", "-", "—", "(", "[", "{", "/"))
+            or last_norm in {"and", "or", "with", "using", "مثل", "يشمل", "تشمل", "منها"}
+            or len(last) <= 2
+        ):
+            lines.pop()
+        else:
+            break
+
+    text = "\n".join(lines).strip()
+
+    if not text:
+        return ""
+
+    if text[-1] not in ".!?؟":
+        text += "."
 
     return text
 
 
-async def generate_rag_answer(question: str, context: str, lang: str) -> str:
-    if lang == "ar":
-        system_prompt = """
-أنت مساعد ذكي خاص ببورتفوليو مودة القرافي.
+def categorize_matches(matches):
+    groups = {}
+    for item in matches:
+        category = normalize_text(item.get("category", "")) or "general"
+        groups.setdefault(category, []).append(item)
+    return groups
 
-مهمتك:
-الإجابة فقط اعتمادًا على المعلومات الموجودة في السياق المسترجع من knowledge base.
 
-قواعد صارمة:
-- إذا كان السؤال بالعربية فأجب بالعربية فقط.
-- لا تبدأ الإجابة بالإنجليزية.
-- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل Python وSQL وPower BI وTableau وFastAPI.
-- لا تضف أي معلومة غير موجودة في السياق.
-- لا تخمّن ولا تستنتج معلومات غير مذكورة.
-- إذا كان السؤال عن مشروع أو خبرة أو تعليم أو مهارة، فاذكر ما ورد في السياق فقط.
-- إذا كان السؤال عن التدريب، فاذكر ما قامت به مودة أثناء التدريب والأدوات التي استخدمتها إذا كانت موجودة في السياق.
-- إذا كان السؤال عن الخبرة، فاذكر المسؤوليات والأدوات أو التقنيات المستخدمة إذا كانت موجودة في السياق.
-- إذا كان السؤال عن المهارات التقنية، فاجمع كل المهارات التقنية المذكورة في السياق بشكل مرتب وواضح.
-- إذا كانت الإجابة موزعة على أكثر من عنصر في السياق، فادمجها في إجابة واحدة طبيعية دون تكرار.
-- إذا طلب المستخدم "كل المشاريع" أو "كل الخبرات" أو "كل التعليم" أو "كل المهارات"، اعرض جميع العناصر الموجودة في السياق بشكل مرتب وواضح.
-- إذا سأل المستخدم عن ترتيب مثل "أول مشروع" ولم يكن الترتيب مذكورًا في السياق، قل بوضوح إن ترتيب المشاريع غير مذكور في البورتفوليو.
-- إذا لم توجد الإجابة في السياق، قل فقط:
-هذه المعلومة غير مذكورة في البورتفوليو.
+def format_multi_item_response(matches, lang: str):
+    if not matches or len(matches) <= 1:
+        return None
 
-أسلوب الإجابة:
-- اجعل الإجابة طبيعية ومرتبة ومهنية.
-- يفضّل أن تكون مختصرة وواضحة.
-- لا تستخدم مقدمات طويلة.
-"""
+    groups = categorize_matches(matches)
+
+    if len(groups) != 1:
+        return None
+
+    category = next(iter(groups.keys()))
+    items = groups[category]
+
+    if category in {"project", "projects"}:
+        if lang == "ar":
+            labels = ["المشروع الأول", "المشروع الثاني", "المشروع الثالث", "المشروع الرابع", "المشروع الخامس", "المشروع السادس", "المشروع السابع", "المشروع الثامن"]
+        else:
+            labels = ["Project 1", "Project 2", "Project 3", "Project 4", "Project 5", "Project 6", "Project 7", "Project 8"]
+    elif category == "experience":
+        if lang == "ar":
+            labels = ["الخبرة الأولى", "الخبرة الثانية", "الخبرة الثالثة", "الخبرة الرابعة", "الخبرة الخامسة", "الخبرة السادسة"]
+        else:
+            labels = ["Experience 1", "Experience 2", "Experience 3", "Experience 4", "Experience 5", "Experience 6"]
+    elif category == "education":
+        if lang == "ar":
+            labels = ["التعليم الأول", "التعليم الثاني", "التعليم الثالث", "التعليم الرابع", "التعليم الخامس"]
+        else:
+            labels = ["Education 1", "Education 2", "Education 3", "Education 4", "Education 5"]
+    elif category == "skills":
+        if lang == "ar":
+            labels = ["المهارة الأولى", "المهارة الثانية", "المهارة الثالثة", "المهارة الرابعة", "المهارة الخامسة", "المهارة السادسة", "المهارة السابعة", "المهارة الثامنة"]
+        else:
+            labels = ["Skill 1", "Skill 2", "Skill 3", "Skill 4", "Skill 5", "Skill 6", "Skill 7", "Skill 8"]
     else:
-        system_prompt = """
-You are an intelligent portfolio assistant for Mawda Alguraafi.
+        return None
 
-Your task:
-Answer only using the information found in the retrieved knowledge base context.
+    blocks = []
+    for i, item in enumerate(items):
+        title = remove_markdown_format(extract_language_title(item.get("title", ""), lang))
+        content = remove_markdown_format(extract_language_content(item.get("content", ""), lang))
 
-Strict rules:
-- If the user asks in English, answer only in English.
-- Do not use Arabic.
-- Do not add any information that is not explicitly in the context.
-- Do not guess or infer missing facts.
-- If the user asks for projects, experience, education, or skills, provide only what appears in the context.
-- If the user asks about the internship, mention what Mawda did during the internship and the tools she used if they appear in the context.
-- If the user asks about experience, mention the responsibilities and the tools or technologies used if they appear in the context.
-- If the user asks about technical skills, combine all relevant technical skills found in the context into one clear answer.
-- If the answer is spread across multiple context items, merge them into one natural response without repetition.
-- If the user asks for all projects, all experience, all education, or all skills, list all relevant items from the context clearly.
-- If the user asks for an order such as "first project" and no order is given in the context, clearly say that the project order is not specified in the portfolio.
-- If the answer is not found, say exactly:
-This information is not mentioned in the portfolio.
+        label = labels[i] if i < len(labels) else (f"{category.title()} {i+1}" if lang == "en" else f"العنصر {i+1}")
+        if lang == "ar":
+            block = f"{label}:\n{title}\n{content}"
+        else:
+            block = f"{label}:\n{title}\n{content}"
 
-Style:
-- Keep the answer professional, natural, and clear.
-- Be concise.
-"""
+        blocks.append(block.strip())
 
+    return "\n\n".join(blocks).strip()
+
+
+async def call_openrouter(messages, max_tokens=650):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
@@ -557,22 +640,14 @@ Style:
         "X-Title": "Mawda Portfolio",
     }
 
-    if lang == "ar":
-        user_prompt = f"السؤال:\n{question}\n\nالسياق:\n{context}"
-    else:
-        user_prompt = f"Question:\n{question}\n\nContext:\n{context}"
-
     payload = {
         "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
+        "messages": messages,
         "temperature": 0.2,
-        "max_tokens": 500,
+        "max_tokens": max_tokens,
     }
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=35.0) as client:
         response = await client.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers=headers,
@@ -590,7 +665,148 @@ Style:
             raise Exception(f"OpenRouter error {response.status_code}: {error_json}")
 
         data = response.json()
-        return data["choices"][0]["message"]["content"].strip()
+        choice = data["choices"][0]
+        content = choice["message"]["content"].strip()
+        finish_reason = choice.get("finish_reason", "")
+        return content, finish_reason
+
+
+async def generate_rag_answer(question: str, context: str, lang: str):
+    if lang == "ar":
+        system_prompt = """
+أنت مساعد ذكي خاص ببورتفوليو مودة القرافي.
+
+مهمتك:
+الإجابة فقط اعتمادًا على المعلومات الموجودة في السياق المسترجع من knowledge base.
+
+قواعد صارمة:
+- إذا كان السؤال بالعربية فأجب بالعربية فقط.
+- لا تبدأ الإجابة بالإنجليزية.
+- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل Python وSQL وPower BI وTableau وFastAPI.
+- لا تضف أي معلومة غير موجودة في السياق.
+- لا تخمّن ولا تستنتج معلومات غير مذكورة.
+- لا تستخدم Markdown نهائيًا. لا تكتب # أو ## أو * أو **.
+- لا تكتب قوائم بنجوم أو شرطات Markdown.
+- إذا كان السؤال عن عنصر واحد، فأجب بفقرة واضحة ومتكاملة.
+- إذا كان السؤال عن أكثر من عنصر، فافصل بينها بوضوح، ولا تدمجها في فقرة واحدة.
+- إذا كان السؤال عن التدريب، فاذكر ما قامت به مودة أثناء التدريب والأدوات التي استخدمتها إذا كانت موجودة في السياق.
+- إذا كان السؤال عن الخبرة، فاذكر المسؤوليات والأدوات أو التقنيات المستخدمة إذا كانت موجودة في السياق.
+- إذا كان السؤال عن المهارات التقنية، فاذكرها بشكل واضح ومنظم.
+- إذا كانت الإجابة موزعة على أكثر من عنصر في السياق، فادمجها في إجابة طبيعية دون تكرار، لكن لا تخلط بين العناصر المختلفة.
+- إذا طلب المستخدم "كل المشاريع" أو "كل الخبرات" أو "كل التعليم" أو "كل المهارات"، فاعرض جميع العناصر الموجودة في السياق بشكل مفصول وواضح.
+- إذا سأل المستخدم عن ترتيب مثل "أول مشروع" ولم يكن الترتيب مذكورًا في السياق، فقل بوضوح إن ترتيب المشاريع غير مذكور في البورتفوليو.
+- إذا لم توجد الإجابة في السياق، قل فقط:
+هذه المعلومة غير مذكورة في البورتفوليو.
+
+مهم جدًا:
+- لا تُنهِ الإجابة بجملة ناقصة.
+- لا تترك آخر فقرة مبتورة.
+- إذا لم تتمكن من إكمال آخر نقطة، فتجاهلها واكتب إجابة مكتملة فقط.
+"""
+        user_prompt = f"السؤال:\n{question}\n\nالسياق:\n{context}"
+    else:
+        system_prompt = """
+You are an intelligent portfolio assistant for Mawda Alguraafi.
+
+Your task:
+Answer only using the information found in the retrieved knowledge base context.
+
+Strict rules:
+- If the user asks in English, answer only in English.
+- Do not use Arabic.
+- Do not add any information that is not explicitly in the context.
+- Do not guess or infer missing facts.
+- Do not use Markdown at all. Do not write #, ##, *, or **.
+- Do not use markdown-style bullet lists.
+- If the user asks about one item, answer in one clear complete paragraph.
+- If the user asks about multiple items, separate them clearly and do not merge them into one paragraph.
+- If the user asks about the internship, mention what Mawda did during the internship and the tools she used if they appear in the context.
+- If the user asks about experience, mention the responsibilities and the tools or technologies used if they appear in the context.
+- If the user asks about technical skills, present them clearly.
+- If the answer is spread across multiple context items, combine it naturally without repetition, but do not mix different items together.
+- If the user asks for all projects, all experience, all education, or all skills, list all relevant items from the context clearly and separately.
+- If the user asks for an order such as "first project" and no order is given in the context, clearly say that the project order is not specified in the portfolio.
+- If the answer is not found, say exactly:
+This information is not mentioned in the portfolio.
+
+Very important:
+- Do not end with an incomplete sentence.
+- Do not leave the last paragraph cut off.
+- If you cannot fully complete the last point, omit it and return only complete text.
+"""
+        user_prompt = f"Question:\n{question}\n\nContext:\n{context}"
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+    return await call_openrouter(messages, max_tokens=700)
+
+
+async def continue_truncated_answer(question: str, context: str, partial_answer: str, lang: str):
+    if lang == "ar":
+        system_prompt = """
+أكمل الإجابة الناقصة فقط.
+أعد فقط الجزء المتبقي من الإجابة دون تكرار أي شيء سبق كتابته.
+لا تستخدم Markdown.
+إذا لم يكن هناك جزء متبقٍ واضح، فأعد نصًا فارغًا.
+"""
+        user_prompt = (
+            f"السؤال:\n{question}\n\n"
+            f"السياق:\n{context}\n\n"
+            f"الإجابة الحالية الناقصة:\n{partial_answer}\n\n"
+            f"أكمل فقط الجزء المتبقي الناقص دون إعادة البداية."
+        )
+    else:
+        system_prompt = """
+Complete only the missing remainder of the truncated answer.
+Return only the remaining part without repeating anything already written.
+Do not use Markdown.
+If there is no clear missing remainder, return an empty string.
+"""
+        user_prompt = (
+            f"Question:\n{question}\n\n"
+            f"Context:\n{context}\n\n"
+            f"Current truncated answer:\n{partial_answer}\n\n"
+            f"Complete only the missing remainder without repeating the beginning."
+        )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+    return await call_openrouter(messages, max_tokens=300)
+
+
+def merge_answer_with_continuation(answer: str, continuation: str) -> str:
+    answer = str(answer or "").strip()
+    continuation = str(continuation or "").strip()
+
+    if not continuation:
+        return answer
+
+    if continuation in answer:
+        return answer
+
+    answer_last = answer.split()[-8:] if answer.split() else []
+    cont_words = continuation.split()
+
+    # remove overlapping repeated words
+    overlap = 0
+    max_overlap = min(len(answer_last), len(cont_words), 8)
+    for i in range(max_overlap, 0, -1):
+        if [w.lower() for w in answer_last[-i:]] == [w.lower() for w in cont_words[:i]]:
+            overlap = i
+            break
+
+    if overlap:
+        continuation = " ".join(cont_words[overlap:]).strip()
+
+    if not continuation:
+        return answer
+
+    sep = "" if answer.endswith(("\n", " ")) else " "
+    return f"{answer}{sep}{continuation}".strip()
 
 
 @app.get("/")
@@ -603,40 +819,16 @@ async def test_openrouter():
     if not OPENROUTER_API_KEY:
         return {"status": "error", "message": "OPENROUTER_API_KEY is missing"}
 
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://portfolio2-rme6.onrender.com",
-        "X-Title": "Mawda Portfolio",
-    }
-
-    payload = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "user", "content": "Say hello in one short sentence."}
-        ],
-        "temperature": 0,
-        "max_tokens": 20,
-    }
-
     try:
-        async with httpx.AsyncClient(timeout=20.0) as client:
-            response = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-            )
-
-        try:
-            body = response.json()
-        except Exception:
-            body = response.text
-
+        content, finish_reason = await call_openrouter(
+            [{"role": "user", "content": "Say hello in one short sentence."}],
+            max_tokens=20,
+        )
         return {
-            "status_code": response.status_code,
-            "body": body,
+            "status": "ok",
+            "finish_reason": finish_reason,
+            "body": content,
         }
-
     except Exception as e:
         return {
             "status": "error",
@@ -650,19 +842,13 @@ async def chat(req: ChatRequest):
     lang = "ar" if is_arabic(question) else "en"
 
     if not question:
-        return {
-            "answer": "الرجاء إدخال سؤال." if lang == "ar" else "Please enter a question."
-        }
+        return {"answer": "الرجاء إدخال سؤال." if lang == "ar" else "Please enter a question."}
 
     if not OPENROUTER_API_KEY:
-        return {
-            "answer": "مفتاح OpenRouter API غير موجود." if lang == "ar" else "OpenRouter API key is missing."
-        }
+        return {"answer": "مفتاح OpenRouter API غير موجود." if lang == "ar" else "OpenRouter API key is missing."}
 
     if not KB:
-        return {
-            "answer": "قاعدة المعرفة غير متوفرة حاليًا." if lang == "ar" else "Knowledge base is currently unavailable."
-        }
+        return {"answer": "قاعدة المعرفة غير متوفرة حاليًا." if lang == "ar" else "Knowledge base is currently unavailable."}
 
     custom_answer = get_custom_answer(question, lang)
     if custom_answer:
@@ -681,15 +867,29 @@ async def chat(req: ChatRequest):
             else "This information is not mentioned in the portfolio."
         }
 
+    # direct formatting for broad lists like all projects / all experience / all education / all skills
+    direct_multi = format_multi_item_response(matches, lang)
+    if direct_multi and broad_category:
+        direct_multi = remove_markdown_format(direct_multi)
+        direct_multi = trim_incomplete_tail(direct_multi)
+        return {"answer": direct_multi}
+
     context = build_context(matches, lang)
 
     try:
-        answer = await generate_rag_answer(question, context, lang)
+        answer, finish_reason = await generate_rag_answer(question, context, lang)
+
+        if finish_reason == "length" or looks_incomplete(answer):
+            continuation, _ = await continue_truncated_answer(question, context, answer, lang)
+            answer = merge_answer_with_continuation(answer, continuation)
 
         if lang == "ar":
             answer = clean_arabic_response(answer)
         else:
             answer = clean_english_response(answer)
+
+        answer = remove_markdown_format(answer)
+        answer = trim_incomplete_tail(answer)
 
         if not answer.strip():
             answer = (
