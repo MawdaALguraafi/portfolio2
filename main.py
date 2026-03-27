@@ -157,9 +157,9 @@ def get_custom_answer(question: str, lang: str):
     }
 
     if lang == "ar" and q in {normalize_text(x) for x in arabic_greetings}:
-        return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات، أو المعدل."
+        return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات."
     if lang == "en" and q in {normalize_text(x) for x in english_greetings}:
-        return "Hi! Ask me about Mawda’s projects, experience, education, skills, or GPA."
+        return "Hi! Ask me about Mawda’s projects, experience, education and skills."
 
     return None
 
