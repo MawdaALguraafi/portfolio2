@@ -44,7 +44,11 @@ print("MODEL:", MODEL_NAME)
 print("KB ITEMS:", len(KB))
 print("EMBED MODEL:", EMBED_MODEL_NAME)
 
-embedder = SentenceTransformer(EMBED_MODEL_NAME)
+embedder = SentenceTransformer(
+    EMBED_MODEL_NAME,
+    device="cpu"
+)
+
 KB_EMBEDDINGS = []
 
 
