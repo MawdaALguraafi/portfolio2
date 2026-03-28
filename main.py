@@ -3,8 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
-import numpy as np
 import os
 import json
 import re
@@ -25,9 +23,8 @@ app.add_middleware(
 BASE_DIR = Path(__file__).resolve().parent
 KB_PATH = BASE_DIR / "knowledge_base.json"
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL_NAME = os.getenv("OPENROUTER_MODEL", "openrouter/auto")
-EMBED_MODEL_NAME = os.getenv("EMBED_MODEL_NAME", "all-MiniLM-L6-v2")
 
 KB = []
 if KB_PATH.exists():
@@ -37,12 +34,7 @@ else:
     print(f"WARNING: knowledge_base.json not found at {KB_PATH}")
 
 print("MODEL:", MODEL_NAME)
-print("EMBED MODEL:", EMBED_MODEL_NAME)
 print("KB ITEMS:", len(KB))
-
-
-embedder = None
-KB_EMBEDDINGS = []
 
 
 class ChatRequest(BaseModel):
@@ -85,6 +77,7 @@ def fix_mixed_text(text: str) -> str:
 
 def remove_markdown_format(text: str) -> str:
     text = str(text or "")
+
     text = re.sub(r"(?m)^\s*#{1,6}\s*", "", text)
     text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
     text = re.sub(r"\*(.*?)\*", r"\1", text)
@@ -93,7 +86,9 @@ def remove_markdown_format(text: str) -> str:
     text = re.sub(r"(?m)^\s*[\*\-]\s+", "", text)
     text = re.sub(r"(?m)^\s*>\s*", "", text)
     text = text.replace("|", " ")
-    return fix_mixed_text(text).strip()
+
+    text = fix_mixed_text(text)
+    return text.strip()
 
 
 def extract_language_content(content: str, lang: str) -> str:
@@ -135,21 +130,104 @@ def extract_language_title(title: str, lang: str) -> str:
     return title
 
 
+def is_greeting_only(question: str, lang: str) -> bool:
+    q = normalize_text(question)
+
+    arabic_greetings = [
+        "هاي", "هلا", "هلاا", "مرحبا", "اهلا",
+        "السلام", "السلام عليكم", "صباح الخير", "مساء الخير"
+    ]
+    english_greetings = [
+        "hi", "hello", "hey", "good morning", "good evening"
+    ]
+
+    greetings = arabic_greetings if lang == "ar" else english_greetings
+
+    for greet in greetings:
+        g = normalize_text(greet)
+        if q.startswith(g) and len(q.split()) <= 3:
+            return True
+
+    return False
+
+
 def get_custom_answer(question: str, lang: str):
     q = normalize_text(question)
 
-    arabic_greetings = {
-        "هاي", "هلا", "هلاا", "مرحبا", "اهلا", "أهلا",
-        "السلام", "السلام عليكم", "صباح الخير", "مساء الخير"
-    }
-    english_greetings = {
-        "hi", "hello", "hey", "good morning", "good evening"
-    }
+    contact_terms_ar = [
+        "التواصل", "طريقة التواصل", "طريقه التواصل",
+        "كيف اتواصل", "ابي اتواصل", "ابغا اتواصل",
+        "ايميل", "الايميل", "البريد", "بريد"
+    ]
+    contact_terms_en = [
+        "contact", "contact method", "how can i contact", "email", "mail"
+    ]
 
-    if lang == "ar" and q in {normalize_text(x) for x in arabic_greetings}:
-        return "مرحبًا! اسأليني عن مودة، مثل المشاريع، الخبرات، التعليم، المهارات."
-    if lang == "en" and q in {normalize_text(x) for x in english_greetings}:
-        return "Hi! Ask me about Mawda’s projects, experience, education, and skills."
+    education_terms_ar = [
+        "تعليم", "التعليم", "دراسه", "الدراسة", "دراسة",
+        "بكالوريوس", "البكالوريوس", "المؤهل", "المؤهلات"
+    ]
+    education_terms_en = [
+        "education", "bachelor", "degree", "academic background", "qualification", "qualifications"
+    ]
+
+    skills_terms_ar = [
+        "مهارات", "المهارات", "مهاراتها", "المهارات التقنية", "المهارات التقنيه"
+    ]
+    skills_terms_en = [
+        "skills", "technical skills"
+    ]
+
+    nabahah_terms = [
+        "نباهه", "نباهة", "nabahah", "lab safety", "laboratory safety"
+    ]
+
+    if any(term in q for term in [normalize_text(x) for x in contact_terms_ar]):
+        return "يمكن التواصل عبر البريد الإلكتروني: MawdaALguraafi@gmail.com"
+
+    if any(term in q for term in [normalize_text(x) for x in contact_terms_en]):
+        return "You can contact Mawda via email: MawdaALguraafi@gmail.com"
+
+    if any(term in q for term in [normalize_text(x) for x in education_terms_ar]):
+        return "مودة حاصلة على بكالوريوس في علوم الحاسب من جامعة طيبة بمعدل 4.88 مع مرتبة الشرف الأولى."
+
+    if any(term in q for term in [normalize_text(x) for x in education_terms_en]):
+        return "Mawda holds a Bachelor’s degree in Computer Science from Taibah University with a GPA of 4.88 and First Class Honors."
+
+    if any(term in q for term in [normalize_text(x) for x in skills_terms_ar]):
+        return (
+            "تمتلك مودة مهارات في Java وPython وSQL، وتحليل البيانات وتصورها باستخدام "
+            "Data Cleaning وEDA وPower BI وStreamlit وFastAPI وTableau، بالإضافة إلى "
+            "مهارات تعلم الآلة مثل Scikit-learn وModel Training وModel Evaluation، "
+            "وأدوات مثل Excel وWord وFigma وCanva وSAP Web Intelligence (WebI) وIDT."
+        )
+
+    if any(term in q for term in [normalize_text(x) for x in skills_terms_en]):
+        return (
+            "Mawda has skills in Java, Python, and SQL, as well as data analysis and "
+            "visualization using Data Cleaning, EDA, Power BI, Streamlit, FastAPI, and Tableau. "
+            "She also has machine learning skills in Scikit-learn, Model Training, and "
+            "Model Evaluation, in addition to tools such as Excel, Word, Figma, Canva, "
+            "SAP Web Intelligence (WebI), and IDT."
+        )
+
+    if any(term in q for term in [normalize_text(x) for x in nabahah_terms]):
+        if lang == "ar":
+            return (
+                "مشروع نباهة هو نظام ذكي لمراقبة سلامة المختبرات باستخدام تقنيات الرؤية الحاسوبية. "
+                "يركز على اكتشاف الالتزام بمعدات الوقاية، ورصد المخاطر مثل الانسكابات، "
+                "ويعتمد على Python وFastAPI وYOLOv8 وSupabase."
+            )
+        return (
+            "Nabāhah is an intelligent laboratory safety monitoring system based on computer vision. "
+            "It focuses on PPE compliance detection and hazard monitoring such as spills, "
+            "and uses Python, FastAPI, YOLOv8, and Supabase."
+        )
+
+    if is_greeting_only(question, lang):
+        if lang == "ar":
+            return "مرحبًا! اسأليني عن خبراتها، تعليمها، ومهاراتها."
+        return "Hi! Ask me about Mawda’s experience, education, and skills."
 
     return None
 
@@ -157,26 +235,253 @@ def get_custom_answer(question: str, lang: str):
 def get_direct_kb_answer(question: str, lang: str):
     q = normalize_text(question)
 
-    if q not in {"معدل", "المعدل", "gpa"}:
-        return None
+    gpa_terms = {"معدل", "المعدل", "gpa", "cgpa"}
+    education_terms = {
+        "تعليم", "التعليم", "دراسه", "الدراسه", "دراسة", "الدراسة",
+        "بكالوريوس", "البكالوريوس", "education", "bachelor", "degree",
+        "academic background", "qualification", "qualifications"
+    }
+    skills_terms = {
+        "مهارات", "المهارات", "مهاراتها", "المهارات التقنية", "المهارات التقنيه",
+        "skills", "technical skills"
+    }
 
-    for item in KB:
-        title = normalize_text(item.get("title", ""))
-        content = normalize_text(item.get("content", ""))
-        category = normalize_text(item.get("category", ""))
+    if q in gpa_terms:
+        best_match = None
 
-        if (
-            "gpa" in title
-            or "gpa" in content
-            or "4.88" in content
-            or "first class honors" in content
-            or (category == "education" and ("4.88" in content or "gpa" in content))
-        ):
-            answer = extract_language_content(item.get("content", ""), lang)
-            if answer:
-                return answer
+        for item in KB:
+            title = normalize_text(item.get("title", ""))
+            content = normalize_text(item.get("content", ""))
+            category = normalize_text(item.get("category", ""))
+
+            if (
+                "gpa" in title
+                or "gpa" in content
+                or "4.88" in content
+                or "first class honors" in content
+                or ("education" == category and ("4.88" in content or "gpa" in content))
+            ):
+                best_match = extract_language_content(item.get("content", ""), lang)
+                if best_match:
+                    return best_match
+
+    if q in education_terms:
+        education_items = []
+
+        for item in KB:
+            category = normalize_text(item.get("category", ""))
+            title = normalize_text(item.get("title", ""))
+            content = normalize_text(item.get("content", ""))
+
+            if (
+                category == "education"
+                or "bachelor" in title
+                or "bachelor" in content
+                or "computer science" in content
+                or "taibah" in content
+                or "bootcamp" in content
+                or "tuwaiq" in content
+            ):
+                education_items.append(item)
+
+        if education_items:
+            direct_multi = format_multi_item_response(education_items, lang)
+            if direct_multi:
+                return direct_multi
+
+            combined = []
+            for item in education_items:
+                content = extract_language_content(item.get("content", ""), lang)
+                if content:
+                    combined.append(content)
+
+            if combined:
+                return "\n\n".join(combined)
+
+    if q in skills_terms:
+        skill_items = []
+
+        for item in KB:
+            category = normalize_text(item.get("category", ""))
+            title = normalize_text(item.get("title", ""))
+            content = normalize_text(item.get("content", ""))
+
+            if (
+                category == "skills"
+                or "skills" in title
+                or "technical skills" in title
+                or any(term in content for term in [
+                    "python", "sql", "java", "power bi", "tableau",
+                    "streamlit", "fastapi", "scikit", "excel", "word",
+                    "figma", "canva", "webi", "idt"
+                ])
+            ):
+                skill_items.append(item)
+
+        if skill_items:
+            direct_multi = format_multi_item_response(skill_items, lang)
+            if direct_multi:
+                return direct_multi
+
+            combined = []
+            for item in skill_items:
+                content = extract_language_content(item.get("content", ""), lang)
+                if content:
+                    combined.append(content)
+
+            if combined:
+                return "\n\n".join(combined)
 
     return None
+
+
+def expand_query_words(question: str):
+    q = normalize_text(question)
+    words = [w for w in q.split() if len(w) > 1]
+
+    synonym_map = {
+        "موده": ["mawda", "alguraafi", "mawda alguraafi"],
+        "مودة": ["mawda", "alguraafi", "mawda alguraafi"],
+        "القرافي": ["alguraafi", "mawda alguraafi"],
+
+        "المعدل": ["gpa", "cgpa", "4.88", "first class honors", "honors"],
+        "معدل": ["gpa", "cgpa", "4.88", "honors"],
+        "جامعه": ["university", "taibah", "taibah university"],
+        "جامعة": ["university", "taibah", "taibah university"],
+        "طيبه": ["taibah", "taibah university"],
+        "طيبة": ["taibah", "taibah university"],
+        "الشرف": ["first class honors", "honors"],
+
+        "خبره": ["experience", "work", "responsibilities"],
+        "خبرة": ["experience", "work", "responsibilities"],
+        "الخبره": ["experience", "work", "responsibilities"],
+        "الخبرة": ["experience", "work", "responsibilities"],
+        "تشتغل": ["work", "job", "experience", "data analyst", "ssm"],
+        "تعمل": ["work", "job", "experience", "data analyst", "ssm"],
+        "وظيفه": ["job", "work", "data analyst"],
+        "وظيفة": ["job", "work", "data analyst"],
+        "مسؤوليات": ["responsibilities", "tasks"],
+        "مهام": ["tasks", "responsibilities"],
+
+        "تدريب": ["internship", "intern", "training", "responsibilities"],
+        "التدريب": ["internship", "intern", "training", "responsibilities"],
+        "متدربه": ["internship", "intern", "criminal evidence"],
+        "متدربة": ["internship", "intern", "criminal evidence"],
+        "سوت": ["did", "responsibilities", "tasks", "conducted", "organized", "prepared"],
+        "سوى": ["did", "responsibilities", "tasks", "conducted", "organized", "prepared"],
+        "وش": ["what", "details"],
+        "ماذا": ["what", "details"],
+        "تحقيق": ["investigation", "forensic"],
+        "جنائي": ["forensic", "criminal evidence"],
+        "ادله": ["evidence", "digital evidence"],
+        "أدلة": ["evidence", "digital evidence"],
+
+        "تعليم": ["education", "bachelor", "bootcamp", "university"],
+        "التعليم": ["education", "bachelor", "bootcamp", "university"],
+        "دراسه": ["education", "bachelor", "bootcamp", "university"],
+        "دراسة": ["education", "bachelor", "bootcamp", "university"],
+        "مؤهلات": ["education", "bachelor", "bootcamp"],
+        "بكالوريوس": ["bachelor", "computer science", "taibah university"],
+        "البكالوريوس": ["bachelor", "computer science", "taibah university"],
+        "معسكر": ["bootcamp", "tuwaiq academy", "data science", "ai bootcamp"],
+        "طويق": ["tuwaiq academy", "bootcamp"],
+
+        "مهارات": ["skills", "technical skills", "tools", "technologies"],
+        "المهارات": ["skills", "technical skills", "tools", "technologies"],
+        "تقنيه": ["technical", "technologies", "tools"],
+        "تقنية": ["technical", "technologies", "tools"],
+        "التقنيه": ["technical", "technologies", "tools"],
+        "التقنية": ["technical", "technologies", "tools"],
+        "تولز": ["tools", "technologies", "used include", "uses"],
+        "ادوات": ["tools", "technologies", "uses", "used include"],
+        "أدوات": ["tools", "technologies", "uses", "used include"],
+        "تستخدم": ["uses", "tools", "technologies"],
+        "استخدمت": ["used", "tools", "technologies"],
+        "برمجه": ["programming", "python", "java", "sql"],
+        "برمجة": ["programming", "python", "java", "sql"],
+        "بيانات": ["data analysis", "eda", "tableau", "power bi", "streamlit", "fastapi"],
+        "تعلم": ["machine learning", "scikit-learn", "model training", "model evaluation"],
+        "تصميم": ["figma", "canva"],
+        "تقارير": ["reporting", "webi", "idt"],
+
+        "مشروع": ["project", "projects", "portfolio"],
+        "مشاريع": ["project", "projects", "portfolio"],
+        "اعمال": ["projects", "portfolio"],
+        "أعمال": ["projects", "portfolio"],
+
+        "نباهه": ["nabahah", "laboratory safety", "lab safety", "yolov8", "supabase", "fastapi"],
+        "نباهة": ["nabahah", "laboratory safety", "lab safety", "yolov8", "supabase", "fastapi"],
+        "interviewsense": ["interview evaluation", "assemblyai", "deepface", "fer", "flask"],
+        "اديداس": ["adidas", "sales dashboard", "eda", "streamlit", "plotly"],
+        "أديداس": ["adidas", "sales dashboard", "eda", "streamlit", "plotly"],
+        "اوبر": ["uber", "booking", "power bi", "excel"],
+        "أوبر": ["uber", "booking", "power bi", "excel"],
+        "king": ["king county", "housing", "price prediction", "scikit-learn"],
+        "county": ["king county", "housing", "price prediction"],
+        "السعوديه": ["saudi arabia", "business activities", "power bi"],
+        "السعودية": ["saudi arabia", "business activities", "power bi"],
+        "تجاره": ["e-commerce", "customer behavior", "excel", "power bi"],
+        "تجارة": ["e-commerce", "customer behavior", "excel", "power bi"],
+        "ايرادات": ["revenue", "tracking dashboard", "product and region", "power bi"],
+        "إيرادات": ["revenue", "tracking dashboard", "product and region", "power bi"],
+
+        "ssm": ["data analyst", "tableau", "power bi", "webi", "idt", "sql server"],
+
+        "xry": ["xry", "xamn", "md-next", "md-red"],
+        "xamn": ["xry", "xamn", "md-next", "md-red"],
+        "webi": ["sap web intelligence", "idt", "reporting tools"],
+        "idt": ["sap information design tool", "webi", "reporting tools"],
+    }
+
+    expanded = set(words)
+
+    for word in words:
+        if word in synonym_map:
+            expanded.update(normalize_text(x) for x in synonym_map[word])
+
+    joined_q = " ".join(words)
+
+    if "تدريب" in joined_q or "internship" in joined_q:
+        expanded.update([
+            "internship", "responsibilities", "criminal evidence",
+            "xry", "xamn", "md-next", "md-red",
+            "digital evidence", "technical reports", "forensic"
+        ])
+
+    if "خبر" in joined_q or "experience" in joined_q:
+        expanded.update([
+            "experience", "responsibilities", "tableau", "power bi",
+            "webi", "idt", "sql server", "data analyst"
+        ])
+
+    if "مهار" in joined_q or "skills" in joined_q:
+        expanded.update([
+            "skills", "technical skills", "python", "sql", "java",
+            "power bi", "tableau", "streamlit", "fastapi",
+            "scikit-learn", "excel", "word", "html", "css",
+            "figma", "canva", "webi", "idt"
+        ])
+
+    if (
+        "تعليم" in joined_q
+        or "دراسة" in joined_q
+        or "دراسه" in joined_q
+        or "بكالوريوس" in joined_q
+        or "education" in joined_q
+        or "bachelor" in joined_q
+    ):
+        expanded.update([
+            "education", "bachelor", "computer science",
+            "taibah university", "bootcamp", "tuwaiq academy"
+        ])
+
+    if "معدل" in joined_q or "gpa" in joined_q:
+        expanded.update(["gpa", "4.88", "first class honors", "taibah university"])
+
+    if "مشاريع" in joined_q or "projects" in joined_q:
+        expanded.update(["project", "projects", "portfolio"])
+
+    return list(expanded)
 
 
 def detect_broad_category(question: str):
@@ -193,21 +498,23 @@ def detect_broad_category(question: str):
         "وش خبراتها", "ما هي الخبرات"
     ]
     education_terms = [
-        "تعليم", "كل التعليم", "التعليم", "education", "academic background",
-        "الدراسه", "الدراسة", "المؤهلات", "المؤهل", "اعرض التعليم"
+        "كل التعليم", "التعليم", "تعليم", "education", "academic background",
+        "الدراسه", "الدراسة", "دراسه", "دراسة",
+        "المؤهلات", "المؤهل", "اعرض التعليم",
+        "بكالوريوس", "البكالوريوس", "bachelor", "degree"
     ]
     skills_terms = [
         "المهارات", "كل المهارات", "المهارات التقنية", "المهارات التقنيه",
         "technical skills", "skills", "وش مهاراتها", "اذكر المهارات"
     ]
 
-    if any(normalize_text(term) in q for term in project_terms):
+    if any(normalize_text(term) == q for term in project_terms):
         return {"mode": "category", "categories": {"project", "projects"}}
-    if any(normalize_text(term) in q for term in experience_terms):
+    if any(normalize_text(term) == q for term in experience_terms):
         return {"mode": "category", "categories": {"experience"}}
-    if any(normalize_text(term) in q for term in education_terms):
+    if any(normalize_text(term) == q for term in education_terms):
         return {"mode": "category", "categories": {"education"}}
-    if any(normalize_text(term) in q for term in skills_terms):
+    if any(normalize_text(term) == q for term in skills_terms):
         return {"mode": "category", "categories": {"skills"}}
 
     return None
@@ -225,132 +532,104 @@ def retrieve_by_category(categories):
     return results
 
 
-def prepare_text_for_embedding(item: dict) -> str:
-    item_id = str(item.get("id", "")).strip()
-    category = str(item.get("category", "")).strip()
-    title = str(item.get("title", "")).strip()
-    content = str(item.get("content", "")).strip()
-
-    return f"ID: {item_id}\nCategory: {category}\nTitle: {title}\nContent: {content}"
-
-
-def get_embedder():
-    global embedder
-
-    if embedder is None:
-        print("Loading embedding model...")
-        embedder = SentenceTransformer(
-            EMBED_MODEL_NAME,
-            device="cpu"
-        )
-        print("Embedding model loaded.")
-
-    return embedder
-
-
-def build_kb_embeddings():
-    global KB_EMBEDDINGS
-
-    if KB_EMBEDDINGS:
-        return
-
-    if not KB:
-        KB_EMBEDDINGS = []
-        return
-
-    model = get_embedder()
-    docs = [prepare_text_for_embedding(item) for item in KB]
-
-    KB_EMBEDDINGS = model.encode(
-        docs,
-        convert_to_numpy=True,
-        normalize_embeddings=True
-    )
-    print("KB EMBEDDINGS:", len(KB_EMBEDDINGS))
-
-
-def cosine_similarity(vec1, vec2) -> float:
-    vec1 = np.array(vec1)
-    vec2 = np.array(vec2)
-
-    denom = np.linalg.norm(vec1) * np.linalg.norm(vec2)
-    if denom == 0:
-        return 0.0
-
-    return float(np.dot(vec1, vec2) / denom)
-
-
 def retrieve_chunks(question: str, top_k: int = 8):
     category_intent = detect_broad_category(question)
     if category_intent:
         matches = retrieve_by_category(category_intent["categories"])
         return matches[:top_k] if top_k else matches
 
-    if not KB:
+    q = normalize_text(question)
+    q_words = expand_query_words(question)
+
+    if not q_words:
         return []
 
-    if not KB_EMBEDDINGS:
-        build_kb_embeddings()
-
-    if len(KB_EMBEDDINGS) == 0:
-        return []
-
-    query_text = str(question or "").strip()
-    if not query_text:
-        return []
-
-    model = get_embedder()
-    query_embedding = model.encode(
-        query_text,
-        convert_to_numpy=True,
-        normalize_embeddings=True
-    )
-
-    normalized_q = normalize_text(question)
     scored_results = []
 
-    for idx, item in enumerate(KB):
-        score = cosine_similarity(query_embedding, KB_EMBEDDINGS[idx])
-
-        title = normalize_text(item.get("title", ""))
-        content = normalize_text(item.get("content", ""))
+    for item in KB:
+        item_id = normalize_text(item.get("id", ""))
+        title = item.get("title", "")
+        content = item.get("content", "")
         category = normalize_text(item.get("category", ""))
 
-        if normalized_q and normalized_q in title:
-            score += 0.20
-        elif normalized_q and normalized_q in content:
-            score += 0.10
+        normalized_title = normalize_text(title)
+        normalized_content = normalize_text(content)
+        full_text = f"{item_id} {normalized_title} {normalized_content}"
 
-        if any(x in normalized_q for x in ["مهارات", "skills"]) and category == "skills":
-            score += 0.08
+        score = 0
 
-        if any(x in normalized_q for x in ["خبره", "خبرة", "experience"]) and category == "experience":
-            score += 0.08
+        if q and q in full_text:
+            score += 20
 
-        if any(x in normalized_q for x in ["مشروع", "مشاريع", "project", "projects"]) and category in {"project", "projects"}:
-            score += 0.08
+        for word in q_words:
+            if not word:
+                continue
+            if word == item_id:
+                score += 15
+            if word in normalized_title:
+                score += 10
+            if word in normalized_content:
+                score += 5
 
-        if any(x in normalized_q for x in ["تعليم", "education", "دراسة", "الدراسة", "المؤهلات"]) and category == "education":
-            score += 0.08
+        for token in q.split():
+            if token in normalized_title:
+                score += 6
+            elif token in normalized_content:
+                score += 3
 
-        scored_results.append((score, item))
+        if any(x in q for x in ["تدريب", "internship", "متدرب"]):
+            if "internship" in item_id or "intern" in normalized_title or "training" in normalized_content:
+                score += 12
+            if "responsibilities" in item_id:
+                score += 8
+
+        if any(x in q for x in ["خبره", "خبرة", "experience", "work"]):
+            if category == "experience":
+                score += 10
+            if "responsibilities" in item_id:
+                score += 6
+
+        if any(x in q for x in ["مهارات", "skills", "تقنيه", "تقنية", "تولز", "ادوات", "أدوات"]):
+            if category == "skills":
+                score += 12
+
+        if any(x in q for x in ["تعليم", "التعليم", "دراسة", "دراسه", "بكالوريوس", "education", "bachelor", "degree"]):
+            if category == "education":
+                score += 15
+            if any(term in normalized_content for term in [
+                "bachelor", "computer science", "taibah", "bootcamp", "tuwaiq"
+            ]):
+                score += 10
+
+        if any(x in q for x in ["تستخدم", "استخدمت", "tools", "uses", "technologies"]):
+            if any(tool_word in normalized_content for tool_word in [
+                "python", "sql", "java", "power bi", "tableau", "streamlit",
+                "fastapi", "scikit", "excel", "word", "html", "css",
+                "figma", "canva", "webi", "idt", "xry", "xamn", "md-next", "md-red"
+            ]):
+                score += 10
+
+        if any(x in q for x in ["معدل", "gpa", "honors"]):
+            if category == "education":
+                score += 10
+
+        if any(x in q for x in ["مشروع", "مشاريع", "project", "projects"]):
+            if category in {"project", "projects"}:
+                score += 8
+
+        if score > 0:
+            scored_results.append((score, item))
 
     scored_results.sort(key=lambda x: x[0], reverse=True)
 
     seen_ids = set()
     results = []
-
     for score, item in scored_results:
         item_id = item.get("id", "")
         if item_id in seen_ids:
             continue
         seen_ids.add(item_id)
-
-        if score < 0.22:
-            continue
-
         results.append(item)
-
         if len(results) >= top_k:
             break
 
@@ -448,6 +727,9 @@ def looks_incomplete(text: str) -> bool:
 
     last_line = text.split("\n")[-1].strip()
     if len(last_line) <= 2:
+        return True
+
+    if re.search(r"(?:\b(?:python|sql|power bi|tableau|fastapi|streamlit|webi|idt|xry|xamn|md-next|md-red)\b)\s*$", lower_text):
         return True
 
     return False
@@ -588,32 +870,65 @@ async def generate_rag_answer(question: str, context: str, lang: str):
         system_prompt = """
 أنت مساعد ذكي خاص ببورتفوليو مودة القرافي.
 
-أجب فقط اعتمادًا على المعلومات الموجودة في السياق.
-إذا لم توجد الإجابة في السياق، قل فقط:
+مهمتك:
+الإجابة فقط اعتمادًا على المعلومات الموجودة في السياق المسترجع من knowledge base.
+
+قواعد صارمة:
+- إذا كان السؤال بالعربية فأجب بالعربية فقط.
+- لا تبدأ الإجابة بالإنجليزية.
+- استخدم الإنجليزية فقط في أسماء الأدوات والتقنيات مثل Python وSQL وPower BI وTableau وFastAPI.
+- لا تضف أي معلومة غير موجودة في السياق.
+- لا تخمّن ولا تستنتج معلومات غير مذكورة.
+- لا تستخدم Markdown نهائيًا. لا تكتب # أو ## أو * أو **.
+- لا تكتب قوائم بنجوم أو شرطات Markdown.
+- إذا كان السؤال عن عنصر واحد، فأجب بفقرة واضحة ومتكاملة.
+- إذا كان السؤال عن أكثر من عنصر، فافصل بينها بوضوح، ولا تدمجها في فقرة واحدة.
+- إذا كان السؤال عن التدريب، فاذكر ما قامت به مودة أثناء التدريب والأدوات التي استخدمتها إذا كانت موجودة في السياق.
+- إذا كان السؤال عن الخبرة، فاذكر المسؤوليات والأدوات أو التقنيات المستخدمة إذا كانت موجودة في السياق.
+- إذا كان السؤال عن التعليم أو البكالوريوس، فاذكر المؤهل والجهة التعليمية والتفاصيل الموجودة في السياق فقط.
+- إذا كان السؤال عن المهارات التقنية، فاذكرها بشكل واضح ومنظم.
+- إذا كانت الإجابة موزعة على أكثر من عنصر في السياق، فادمجها في إجابة طبيعية دون تكرار، لكن لا تخلط بين العناصر المختلفة.
+- إذا طلب المستخدم "كل المشاريع" أو "كل الخبرات" أو "كل التعليم" أو "كل المهارات"، فاعرض جميع العناصر الموجودة في السياق بشكل مفصول وواضح.
+- إذا سأل المستخدم عن ترتيب مثل "أول مشروع" ولم يكن الترتيب مذكورًا في السياق، فقل بوضوح إن ترتيب المشاريع غير مذكور في البورتفوليو.
+- إذا لم توجد الإجابة في السياق، قل فقط:
 هذه المعلومة غير مذكورة في البورتفوليو.
 
-قواعد:
-- إذا كان السؤال بالعربية فأجب بالعربية فقط.
-- لا تستخدم Markdown.
-- لا تخمّن.
-- لا تكتب جملة ناقصة.
-- إذا كان السؤال عن أكثر من عنصر، افصلها بوضوح.
+مهم جدًا:
+- لا تُنهِ الإجابة بجملة ناقصة.
+- لا تترك آخر فقرة مبتورة.
+- إذا لم تتمكن من إكمال آخر نقطة، فتجاهلها واكتب إجابة مكتملة فقط.
 """
         user_prompt = f"السؤال:\n{question}\n\nالسياق:\n{context}"
     else:
         system_prompt = """
 You are an intelligent portfolio assistant for Mawda Alguraafi.
 
-Answer only using the provided context.
-If the answer is not in the context, say exactly:
+Your task:
+Answer only using the information found in the retrieved knowledge base context.
+
+Strict rules:
+- If the user asks in English, answer only in English.
+- Do not use Arabic.
+- Do not add any information that is not explicitly in the context.
+- Do not guess or infer missing facts.
+- Do not use Markdown at all. Do not write #, ##, *, or **.
+- Do not use markdown-style bullet lists.
+- If the user asks about one item, answer in one clear complete paragraph.
+- If the user asks about multiple items, separate them clearly and do not merge them into one paragraph.
+- If the user asks about the internship, mention what Mawda did during the internship and the tools she used if they appear in the context.
+- If the user asks about experience, mention the responsibilities and the tools or technologies used if they appear in the context.
+- If the user asks about education or bachelor’s degree, mention only the qualification and details explicitly found in the context.
+- If the user asks about technical skills, present them clearly.
+- If the answer is spread across multiple context items, combine it naturally without repetition, but do not mix different items together.
+- If the user asks for all projects, all experience, all education, or all skills, list all relevant items from the context clearly and separately.
+- If the user asks for an order such as "first project" and no order is given in the context, clearly say that the project order is not specified in the portfolio.
+- If the answer is not found, say exactly:
 This information is not mentioned in the portfolio.
 
-Rules:
-- Answer in English only.
-- Do not use Markdown.
-- Do not guess.
-- Do not end with incomplete text.
-- If the user asks for multiple items, separate them clearly.
+Very important:
+- Do not end with an incomplete sentence.
+- Do not leave the last paragraph cut off.
+- If you cannot fully complete the last point, omit it and return only complete text.
 """
         user_prompt = f"Question:\n{question}\n\nContext:\n{context}"
 
@@ -627,27 +942,29 @@ Rules:
 async def continue_truncated_answer(question: str, context: str, partial_answer: str, lang: str):
     if lang == "ar":
         system_prompt = """
-أكمل فقط الجزء الناقص من الإجابة دون تكرار البداية.
+أكمل الإجابة الناقصة فقط.
+أعد فقط الجزء المتبقي من الإجابة دون تكرار أي شيء سبق كتابته.
 لا تستخدم Markdown.
-إذا لم يوجد تكملة واضحة، أعد نصًا فارغًا.
+إذا لم يكن هناك جزء متبقٍ واضح، فأعد نصًا فارغًا.
 """
         user_prompt = (
             f"السؤال:\n{question}\n\n"
             f"السياق:\n{context}\n\n"
             f"الإجابة الحالية الناقصة:\n{partial_answer}\n\n"
-            f"أكمل الجزء الناقص فقط."
+            f"أكمل فقط الجزء المتبقي الناقص دون إعادة البداية."
         )
     else:
         system_prompt = """
-Complete only the missing part of the answer without repeating the beginning.
+Complete only the missing remainder of the truncated answer.
+Return only the remaining part without repeating anything already written.
 Do not use Markdown.
-If there is no clear continuation, return an empty string.
+If there is no clear missing remainder, return an empty string.
 """
         user_prompt = (
             f"Question:\n{question}\n\n"
             f"Context:\n{context}\n\n"
             f"Current truncated answer:\n{partial_answer}\n\n"
-            f"Complete only the missing remainder."
+            f"Complete only the missing remainder without repeating the beginning."
         )
 
     messages = [
@@ -692,17 +1009,6 @@ def root():
     return {"status": "ok", "message": "API is running"}
 
 
-@app.get("/health")
-def health():
-    return {
-        "status": "ok",
-        "kb_loaded": len(KB),
-        "embeddings_ready": len(KB_EMBEDDINGS),
-        "model": MODEL_NAME,
-        "embed_model": EMBED_MODEL_NAME,
-    }
-
-
 @app.get("/test-openrouter")
 async def test_openrouter():
     if not OPENROUTER_API_KEY:
@@ -719,7 +1025,10 @@ async def test_openrouter():
             "body": content,
         }
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return {
+            "status": "error",
+            "message": str(e),
+        }
 
 
 @app.post("/api/chat")
@@ -742,7 +1051,11 @@ async def chat(req: ChatRequest):
 
     direct_kb_answer = get_direct_kb_answer(question, lang)
     if direct_kb_answer:
-        direct_kb_answer = clean_arabic_response(direct_kb_answer) if lang == "ar" else clean_english_response(direct_kb_answer)
+        if lang == "ar":
+            direct_kb_answer = clean_arabic_response(direct_kb_answer)
+        else:
+            direct_kb_answer = clean_english_response(direct_kb_answer)
+
         direct_kb_answer = remove_markdown_format(direct_kb_answer)
         direct_kb_answer = trim_incomplete_tail(direct_kb_answer)
         return {"answer": direct_kb_answer}
@@ -794,6 +1107,11 @@ async def chat(req: ChatRequest):
 
     except Exception as e:
         print("Unexpected error:", str(e))
+
+        fallback = get_custom_answer(question, lang)
+        if fallback:
+            return {"answer": fallback}
+
         if lang == "ar":
-            return {"answer": "تعذر الوصول إلى المساعد حاليًا. الرجاء المحاولة مرة أخرى."}
-        return {"answer": "The assistant is currently unavailable. Please try again."}
+            return {"answer": "هذه المعلومة غير متوفرة حاليًا. الرجاء المحاولة مرة أخرى."}
+        return {"answer": "This information is currently unavailable. Please try again."}
